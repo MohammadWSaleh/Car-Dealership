@@ -6,6 +6,7 @@ import { Field, Input, Notice, useAction } from '../components/ui.jsx';
 import { Streaks } from '../components/Reveal.jsx';
 import { Logo } from '../components/Logo.jsx';
 import { LangSwitch } from '../components/Layout.jsx';
+import { safeNext } from '../utils.js';
 
 function AuthShell({ children, title, lead }) {
   const { t } = useTranslation();
@@ -32,8 +33,8 @@ function Password({ label, value, onChange, autoComplete, minLength, hint }) {
 export function Login({ landing = false }) {
   const { t } = useTranslation(); const { login, user } = useAuth(); const nav = useNavigate(); const [p] = useSearchParams(); const [, busy] = useAction();
   const [f, setF] = useState({ email: '', password: '' }); const [err, setErr] = useState(null); const [wait, setWait] = useState(false);
-  if (user) return <Navigate to={p.get('next') || '/home'} replace />;
-  const submit = async (e) => { e.preventDefault(); setErr(null); setWait(true); try { await login(f.email, f.password); nav(p.get('next') || '/home'); } catch (x) { setErr(x); } finally { setWait(false); } };
+  if (user) return <Navigate to={safeNext(p.get('next'))} replace />;
+  const submit = async (e) => { e.preventDefault(); setErr(null); setWait(true); try { await login(f.email, f.password); nav(safeNext(p.get('next'))); } catch (x) { setErr(x); } finally { setWait(false); } };
   return <AuthShell title={t('auth.welcome')} lead={t('auth.welcome_lead')}>
     <form onSubmit={submit} className="space-y-4">
       {err && <div role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{err.code === 'account_locked' ? t('auth.locked') : err.code === 'account_disabled' ? t('auth.disabled') : t('auth.invalid')}</div>}

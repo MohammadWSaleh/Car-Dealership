@@ -51,7 +51,7 @@ const httpsSite = !!(baseConfig.tlsKey || /^https:/i.test(process.env.PUBLIC_ORI
     .forEach((m) => app.use('/api', require(`./modules/${m}`)(ctx)));
   app.get('/api/documents/:id', ctx.auth.requireRole(), (req, res) => {
     const { doc, buffer } = ctx.docs.read(req.user, Number(req.params.id));
-    res.type(doc.mime).set('Content-Disposition', `inline; filename="${doc.original_name.replace(/[^\w.\-]/g, '_')}"`).send(buffer);
+    res.type(doc.mime).set('Content-Disposition', `inline; filename="${doc.original_name.replace(/[^\w.-]/g, '_')}"`).send(buffer);
   });
   app.use('/api', (req, res) => res.status(404).json({ error: { code: 'not_found', message: 'Unknown endpoint' } }));
 
@@ -69,6 +69,7 @@ const httpsSite = !!(baseConfig.tlsKey || /^https:/i.test(process.env.PUBLIC_ORI
     if (err && err.name === 'MulterError') return res.status(400).json({ error: { code: 'upload_error', message: err.message } });
     if (err instanceof SyntaxError && err.status === 400) return res.status(400).json({ error: { code: 'invalid_json', message: 'The request body is not valid JSON' } });
     if (err && /SQLITE_CONSTRAINT/.test(String(err.code))) return res.status(409).json({ error: { code: 'constraint_violation', message: 'The change conflicts with existing data' } });
+    if ((err instanceof TypeError && /can only bind/.test(err.message)) || (err instanceof RangeError && /parameter/i.test(err.message))) return res.status(400).json({ error: { code: 'invalid_input', message: 'One or more fields have an invalid type' } });
     console.error(err); // never leak internals to the client
     res.status(500).json({ error: { code: 'server_error', message: 'Something went wrong' } });
   });

@@ -41,7 +41,7 @@ export default function Catalogue() {
   const lo = Math.floor((filters.data?.min_price || 0) / 1000) * 1000; const hi = Math.ceil((filters.data?.max_price || 100000) / 1000) * 1000;
   const cfg = useQuery({ queryKey: ['finder-config'], queryFn: () => api.get('/catalogue/finder-config') });
   const monthlyOf = (x) => (cfg.data ? monthlyPayment(x.price_usd, cfg.data.down_percent, cfg.data.term_months, cfg.data.rate_percent) : null);
-  const budget = Number(sp.get('monthly')) || 0; const MAXM = 2500;
+  const budget = cfg.data ? Number(sp.get('monthly')) || 0 : 0; const MAXM = 2500;
   const active = KEYS.filter((k) => k !== 'sort' && f[k]);
   return (
     <div className="grid gap-6 lg:grid-cols-[16rem_1fr]">

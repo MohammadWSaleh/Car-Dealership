@@ -62,7 +62,7 @@ module.exports = function admin(ctx) {
   r.post('/admin/users/:id/reset-password', ADM, (req, res) => {
     const u = db.prepare('SELECT * FROM users WHERE id = ?').get(req.params.id); if (!u) throw notFound('User');
     const pw = (req.body || {}).password;
-    if (String(pw || '').length < 8) throw bad('weak_password', 'Password must be at least 8 characters');
+    if (typeof pw !== 'string' || pw.length < 8) throw bad('weak_password', 'Password must be at least 8 characters');
     db.prepare('UPDATE users SET password_hash = ?, failed_logins = 0, locked_until = NULL WHERE id = ?').run(auth.hash(pw), u.id);
     audit(req.user.id, 'password_reset', 'user', u.id);
     res.json({ ok: true });
