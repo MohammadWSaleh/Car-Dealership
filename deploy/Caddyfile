@@ -1,0 +1,19 @@
+# When running behind this proxy start the app with BEHIND_HTTPS_PROXY=1 so it sends the upgrade-insecure-requests policy.
+# NFR-SEC-01: TLS 1.2+ in front of the application.
+# Production: replace the host with your domain and Caddy obtains a certificate automatically.
+# Local demo with HTTPS:  caddy run --config deploy/Caddyfile
+fsm.example.com {
+	tls {
+		protocols tls1.2 tls1.3
+	}
+	encode gzip
+	reverse_proxy localhost:3000
+}
+
+# Local test site (self-signed certificate issued by Caddy's local CA)
+https://localhost {
+	tls internal {
+		protocols tls1.2 tls1.3
+	}
+	reverse_proxy localhost:3000
+}

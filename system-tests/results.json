@@ -1,0 +1,410 @@
+[
+ {
+  "id": "SYS-SEC-HDR",
+  "name": "Security headers present, no X-Powered-By (OWASP A05)",
+  "pass": true,
+  "detail": "{'Content-Security-Policy': \"default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline'\", 'Cross-Origin-Opener-Policy': 'same-origin'"
+ },
+ {
+  "id": "SYS-WEB-01",
+  "name": "Built web application is served from the same server (SPA index)",
+  "pass": true,
+  "detail": "200"
+ },
+ {
+  "id": "SYS-WEB-02",
+  "name": "Deep links fall back to the SPA",
+  "pass": true,
+  "detail": "200"
+ },
+ {
+  "id": "SYS-SEC-INJ",
+  "name": "SQL injection strings in login and filters do not bypass or break anything",
+  "pass": true,
+  "detail": "(401, 200, 400, 200)"
+ },
+ {
+  "id": "SYS-SEC-AUTHN",
+  "name": "Protected endpoints reject anonymous callers with 401",
+  "pass": true,
+  "detail": "[401, 401, 401]"
+ },
+ {
+  "id": "SYS-SEC-AUTHZ",
+  "name": "Roles cannot call endpoints of other roles (customer/consultant/manager vs admin)",
+  "pass": true,
+  "detail": "[403, 403, 403, 403]"
+ },
+ {
+  "id": "SYS-SEC-IDOR",
+  "name": "A customer cannot read another customer's deal / documents",
+  "pass": true,
+  "detail": "404"
+ },
+ {
+  "id": "SYS-SEC-JWT",
+  "name": "Tampered or garbage tokens are rejected",
+  "pass": true,
+  "detail": "(401, 401)"
+ },
+ {
+  "id": "SYS-SEC-LOCK",
+  "name": "Account locks after 5 failed attempts even for the right password (NFR-SEC-03)",
+  "pass": true,
+  "detail": "(423, {'error': {'code': 'account_locked', 'message': 'Account locked until 2026-11-23T23:06:14.304Z', 'details': {'locked_until': '2026-11-23T23:06:14.304Z'}}})"
+ },
+ {
+  "id": "SYS-SEC-ERR",
+  "name": "Unknown routes / malformed input return clean errors with no stack traces",
+  "pass": true,
+  "detail": "(404, 401)"
+ },
+ {
+  "id": "SYS-SEC-PW",
+  "name": "A password shorter than 8 characters is refused at registration (NFR-SEC-02)",
+  "pass": true,
+  "detail": "400"
+ },
+ {
+  "id": "SYS-SEC-HASH",
+  "name": "Every stored password is a salted bcrypt hash, none in plain text (NFR-SEC-02)",
+  "pass": true,
+  "detail": "18"
+ },
+ {
+  "id": "SYS-SEC-ENC",
+  "name": "Any file in the upload folder is encrypted (no readable PDF/JPEG header) (NFR-SEC-04)",
+  "pass": true,
+  "detail": "21"
+ },
+ {
+  "id": "SYS-PERF-01",
+  "name": "50 concurrent users x 10 requests on catalogue pages, 95% under 3 s (NFR-PERF-01)",
+  "pass": true,
+  "detail": "p95=117 ms"
+ },
+ {
+  "id": "SYS-PERF-02",
+  "name": "Stress: 200 concurrent users, no failed request, p95 still under 3 s",
+  "pass": true,
+  "detail": "p95=1075 ms"
+ },
+ {
+  "id": "SYS-TLS",
+  "name": "HTTPS accepts TLS 1.2 and 1.3 and refuses TLS 1.0/1.1 (NFR-SEC-01)",
+  "pass": true,
+  "detail": "('TLSv1.2', 'TLSv1.3', 'refused', '1')"
+ },
+ {
+  "id": "SYS-TLS-API",
+  "name": "API fully functional over HTTPS",
+  "pass": true,
+  "detail": "200"
+ },
+ {
+  "id": "SYS-UI-CAT-01",
+  "name": "Catalogue page lists car cards (TC-CAT-01)",
+  "pass": true,
+  "detail": "30"
+ },
+ {
+  "id": "SYS-UI-CAT-02",
+  "name": "Cards show USD price and LBP equivalent (TC-CAT-03, NFR-LOC-01)",
+  "pass": true,
+  "detail": "Skip to main content FULL STACK MOTORS Home Cars Compare EV check My test drive \u0627\u0644\u0639\u0631\u0628\u064a\u0629 Sign in Create account Filters B"
+ },
+ {
+  "id": "SYS-UI-CAT-03",
+  "name": "Fuel filter narrows the list (TC-CAT-02)",
+  "pass": true,
+  "detail": "(12, 30)"
+ },
+ {
+  "id": "SYS-UI-CAT-04",
+  "name": "Trim page shows price, stock status, inclusions and calculators (TC-CAT-03/04/06/07)",
+  "pass": true,
+  "detail": "Skip to main content FULL STACK MOTORS Home Cars Compare EV check My test drive \u0627\u0644\u0639\u0631\u0628\u064a\u0629 Sign in Create account Colour: White Toyota Corolla  1.6 Comfo"
+ },
+ {
+  "id": "SYS-UI-CAT-05",
+  "name": "Compare page shows exactly three trims side by side and the 4th is blocked (TC-CAT-05)",
+  "pass": true,
+  "detail": "(4, True)"
+ },
+ {
+  "id": "SYS-UI-LANG-01",
+  "name": "Switching to Arabic flips the page to RTL immediately with Arabic text, no reload (TC-ACC-05, NFR-USA-01)",
+  "pass": true,
+  "detail": "('rtl', 'ar')"
+ },
+ {
+  "id": "SYS-UI-LANG-02",
+  "name": "Switching back restores LTR English",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-VA-01",
+  "name": "Chat assistant answers a catalogue question (TC-VA-01/02)",
+  "pass": true,
+  "detail": "est drive. Type \"agent\" any time to talk to a consultant. How much is the cheapest electric car? Which model do you mean? For example: Toyota Corolla, Toyota RAV4, Hyundai Tucson, Hyundai Ioniq 5 Send"
+ },
+ {
+  "id": "SYS-UI-VA-02",
+  "name": "Chat answers a rule-base question (fixed prices, no negotiation) (TC-VA-02)",
+  "pass": true,
+  "detail": " car? Which model do you mean? For example: Toyota Corolla, Toyota RAV4, Hyundai Tucson, Hyundai Ioniq 5 Do you give discounts if I pay cash? Sorry, I did not understand that. Try asking about a model, its price or availability, or a test drive. Send"
+ },
+ {
+  "id": "SYS-UI-VA-03",
+  "name": "Hand-off asks for contact details to create a lead (TC-VA-03)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-VA-04",
+  "name": "The chat hand-off created a lead with source \"assistant\" visible to staff (TC-DEAL-01/VA-03)",
+  "pass": true,
+  "detail": "[{\"id\": 23, \"contact_name\": \"Chat Visitor\", \"contact_phone\": null, \"contact_email\": \"chatvisitor@example.com\", \"source\": \"chat\", \"stage\": \"lead\", \"car_label\": \"-\", \"consultant_name\": \"Layla Mansour\", "
+ },
+ {
+  "id": "SYS-UI-EV-01",
+  "name": "EV readiness check returns a verdict with reasons (TC-EV-01/02)",
+  "pass": true,
+  "detail": "Skip to main content FULL STACK MOTORS Home Cars Compare3 EV check My test drive \u0627\u0644\u0639\u0631\u0628\u064a\u0629 Sign in Create account EV check  Answer a few questions to see whether an electric car fits your daily life in "
+ },
+ {
+  "id": "SYS-UI-ACC-01",
+  "name": "A new customer can register with consent and lands logged in on the home page (TC-ACC-01/02)",
+  "pass": true,
+  "detail": "http://127.0.0.1:56633/home"
+ },
+ {
+  "id": "SYS-UI-TD-01",
+  "name": "Customer books a test drive end to end in the browser and gets a confirmation (TC-TD-01/04)",
+  "pass": true,
+  "detail": "US  Highway Road, Beirut, Lebanon  Mon\u2013Sat, 9:00\u201318:00  \u00a9 2026 Full Stack Motors \u00b7 One stack. One price. Your car. New cars only \u00b7 Lebanon \u00b7 Fixed, non-negotiable prices in USD \ud83d\udcac Ask Full Stack Motors"
+ },
+ {
+  "id": "SYS-UI-USA-03",
+  "name": "Booking from the trim page needs only consent + Book for a signed-in customer (slot pre-selected), under 3 minutes (NFR-USA-03, proxy for human test)",
+  "pass": true,
+  "detail": "2.8s (machine time; human timing in MANUAL-CHECKS)"
+ },
+ {
+  "id": "SYS-UI-TD-02",
+  "name": "The visitor can still choose another date and time (TC-TD-01)",
+  "pass": true,
+  "detail": "18"
+ },
+ {
+  "id": "SYS-UI-UX-01",
+  "name": "Home \"find your car\" opens the catalogue pre-filtered; the filters live in the address and survive a reload",
+  "pass": true,
+  "detail": "('http://127.0.0.1:56633/cars?max_price=35000&fuel_type=electric', 4, 4)"
+ },
+ {
+  "id": "SYS-UI-UX-02",
+  "name": "The budget slider narrows the list and updates the address",
+  "pass": true,
+  "detail": "http://127.0.0.1:56633/cars?max_price=31000&fuel_type=electric"
+ },
+ {
+  "id": "SYS-UI-UX-03",
+  "name": "Cards state that the price is fixed and show the availability",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-UX-04",
+  "name": "Colour swatches on the trim page switch the selected colour",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-UX-05",
+  "name": "A photo uploaded by the Sales Manager is stored, served publicly and replaces the illustration on the card (FR-CAT-01)",
+  "pass": true,
+  "detail": "1"
+ },
+ {
+  "id": "SYS-UI-UX-06",
+  "name": "Consultant sees the pipeline board with one column per stage and the cards of the real deals",
+  "pass": true,
+  "detail": "['Lead\\n2', 'Quoted\\n2', 'Reserved\\n2', 'Contract signed\\n0', 'Paid\\n1', 'Delivered\\n5']"
+ },
+ {
+  "id": "SYS-UI-UX-07",
+  "name": "A deal page shows one highlighted next step with its action button (reserved deal: create the contract)",
+  "pass": true,
+  "detail": "\u2192 NEXT STEP Create the purchase contract. Create contract"
+ },
+ {
+  "id": "SYS-UI-UX-08",
+  "name": "The consultant dashboard opens with a \"needs attention today\" list",
+  "pass": true,
+  "detail": "Needs your attention today\nKarim Nassar: contract is waiting for the signed copy.\nOpen \u2192"
+ },
+ {
+  "id": "SYS-UI-UX-10",
+  "name": "The customer account home shows the current order, the next step, a progress bar and a contact button",
+  "pass": true,
+  "detail": "YOUR ORDER\n\nKia Sportage 2.0 GT-Line\n\nNext step: Read and sign your contract.\n\nOpen\nContact us\n\n1 / 5"
+ },
+ {
+  "id": "SYS-UI-UX-10b",
+  "name": "The contact button opens the chat",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-A11Y-01",
+  "name": "The first Tab stop is a \"Skip to main content\" link, and the page has a main landmark",
+  "pass": true,
+  "detail": "Skip to main content"
+ },
+ {
+  "id": "SYS-UI-LANG-04",
+  "name": "Arabic reading mode can show Arabic-Indic digits (\u0660\u0661\u0662\u0663) in prices",
+  "pass": true,
+  "detail": "\u0627\u0646\u062a\u0642\u0644 \u0625\u0644\u0649 \u0627\u0644\u0645\u062d\u062a\u0648\u0649 \u0627\u0644\u0631\u0626\u064a\u0633\u064a\nFULL STACK\nMOTORS\n\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629\n\u0627\u0644\u0633\u064a\u0627\u0631\u0627\u062a\n\u0645\u0642\u0627\u0631\u0646\u0629\n\u0641\u062d\u0635 \u0627\u0644\u0633\u064a\u0627\u0631\u0629"
+ },
+ {
+  "id": "SYS-UI-A11Y-02",
+  "name": "Automated WCAG 2 A/AA scan (axe-core) finds no serious or critical issue on 8 key pages",
+  "pass": true,
+  "detail": "{}"
+ },
+ {
+  "id": "SYS-UI-LAND-01",
+  "name": "Opening the site link lands on the sign-in page, with a guest option and a create-account link",
+  "pass": true,
+  "detail": "http://127.0.0.1:56633/"
+ },
+ {
+  "id": "SYS-UI-LAND-02",
+  "name": "A wrong password shows a clear message and stays on the page",
+  "pass": true,
+  "detail": "Wrong email or password."
+ },
+ {
+  "id": "SYS-UI-LAND-03",
+  "name": "Signing in goes straight to the home page",
+  "pass": true,
+  "detail": "http://127.0.0.1:56633/home"
+ },
+ {
+  "id": "SYS-UI-LAND-04",
+  "name": "Continue as guest opens the public home page with the hero and the car finder",
+  "pass": true,
+  "detail": "http://127.0.0.1:56633/home"
+ },
+ {
+  "id": "SYS-UI-LAND-05",
+  "name": "On a phone the menu opens from the hamburger button and lists the pages",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-ANIM-01",
+  "name": "Sections below the hero reveal as the visitor scrolls (scroll animation)",
+  "pass": true,
+  "detail": "(13, 8)"
+ },
+ {
+  "id": "SYS-UI-TBL-01",
+  "name": "Staff tables have sortable column headers and a sticky header row",
+  "pass": true,
+  "detail": "sticky"
+ },
+ {
+  "id": "SYS-UI-DEAL-01",
+  "name": "Consultant completes lead \u2192 quotation \u2192 deposit \u2192 contract in the browser (TC-DEAL-01/03/06, TC-PAY-01) (NFR-USA-02 proxy)",
+  "pass": true,
+  "detail": "reserved=True contract=True 7.6s"
+ },
+ {
+  "id": "SYS-UI-ROLE-01",
+  "name": "35 staff pages across 6 roles render with no error banner and no untranslated keys (TC-ADM-01, all)",
+  "pass": true,
+  "detail": "[]"
+ },
+ {
+  "id": "SYS-UI-ROLE-02",
+  "name": "A consultant opening /staff/users sees no user list (forbidden / redirect) (TC-ADM-01)",
+  "pass": true,
+  "detail": "http://127.0.0.1:56633/staff/users"
+ },
+ {
+  "id": "SYS-UI-PORTAL-01",
+  "name": "Customer portal pages (deals, profile, privacy, Owners Circle) render (TC-ACC-03/04, TC-OC-01)",
+  "pass": true,
+  "detail": "[]"
+ },
+ {
+  "id": "SYS-SEC-XSS",
+  "name": "Script/HTML in a customer name is shown as text, never executed (OWASP A03/XSS)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-LANG-03",
+  "name": "Public pages in Arabic are RTL with no untranslated keys (NFR-USA-01)",
+  "pass": true,
+  "detail": "[]"
+ },
+ {
+  "id": "SYS-UI-USA-04",
+  "name": "No horizontal page overflow at 360, 412, 768, 1024, 1280, 1920 px on public and staff pages (NFR-USA-04)",
+  "pass": true,
+  "detail": "[]"
+ },
+ {
+  "id": "SYS-UI-MOB-01",
+  "name": "Android (Pixel 7 emulation) renders catalogue (NFR-CMP-01 partial)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-MOB-02",
+  "name": "iPhone 14 viewport emulation renders catalogue (NFR-CMP-01 partial)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-CMP-FIREFOX",
+  "name": "firefox renders the catalogue (NFR-CMP-01)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-CMP-WEBKIT",
+  "name": "webkit renders the catalogue (NFR-CMP-01)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-ERR",
+  "name": "No uncaught JavaScript errors in any browser journey",
+  "pass": true,
+  "detail": "[]"
+ },
+ {
+  "id": "SYS-REL-01",
+  "name": "A backup file is produced (manual trigger via admin API; daily timer is also started at boot) (NFR-REL-01)",
+  "pass": true,
+  "detail": "(201, ['fsm-20261123-225410'])"
+ },
+ {
+  "id": "SYS-REL-02",
+  "name": "First start created an automatic backup without any request",
+  "pass": true,
+  "detail": "data (set SEED_ON_EMPTY=0 to disable)...\nDemo data ready. Staff and customer accounts use the password Fsm@2026!\nFull Stack Motors running on http://localhost:50893\nBackup created fsm-20261123-225410\n"
+ },
+ {
+  "id": "SYS-REL-03",
+  "name": "Restore script brings the database back to the backed-up state (data loss < 24 h) (NFR-REL-01)",
+  "pass": true,
+  "detail": "('Restored fsm-20261123-225410 - start the server again.\\n', '', 0, 18, 18)"
+ }
+]

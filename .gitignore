@@ -1,0 +1,15 @@
+node_modules/
+dist/
+backend/data/
+backend/backups/
+*.log
+.env
+uploads/
+backend/uploads/
+coverage/
+.DS_Store
+Thumbs.db
+*.pdf
+system-tests/__pycache__/
+system-tests/shots/
+!docs/*.pdf
