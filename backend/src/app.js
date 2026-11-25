@@ -47,7 +47,7 @@ const httpsSite = !!(baseConfig.tlsKey || /^https:/i.test(process.env.PUBLIC_ORI
   }
   app.get('/api/health', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
   // order matters only for modules that publish helpers on ctx at load time
-  ['accounts', 'catalogue', 'testdrives', 'assistant', 'ev', 'deals', 'payments', 'inventory', 'delivery', 'ownerscircle', 'admin', 'reports']
+  ['accounts', 'catalogue', 'testdrives', 'tradein', 'assistant', 'ev', 'deals', 'payments', 'inventory', 'delivery', 'ownerscircle', 'admin', 'reports']
     .forEach((m) => app.use('/api', require(`./modules/${m}`)(ctx)));
   app.get('/api/documents/:id', ctx.auth.requireRole(), (req, res) => {
     const { doc, buffer } = ctx.docs.read(req.user, Number(req.params.id));

@@ -17,6 +17,15 @@ const DEFAULTS = {
   default_interest: '8',          // yearly % for instalment calculator (FR-CAT-06)
   finder_term_months: '60',       // F1: loan term used by the monthly-budget finder
   finder_down_percent: '20',      // F1: down payment (% of price) used by the finder
+  tradein_base_small: '9000',     // F4: typical new price of the segment, USD
+  tradein_base_sedan: '18000',
+  tradein_base_suv: '28000',
+  tradein_base_premium: '45000',
+  tradein_age_percent: '12',      // F4: yearly value loss, %
+  tradein_range_percent: '8',     // F4: the estimate is shown as a range of +/- this %
+  tradein_offer_days: '7',        // F4: how long a confirmed trade-in offer stays valid
+  eta_stock_days: '3',            // F6: working days to prepare a car that is in stock (or has arrived)
+  eta_order_days: '45',           // F6: days to bring a car that is not yet in transit
   fuel_price_usd_per_l: '1.1',
   electricity_usd_per_kwh: '0.2',
   referral_credit_usd: '200',
@@ -40,6 +49,15 @@ const VALIDATORS = {
   default_interest: (v) => num(v, 0, 100),
   finder_term_months: (v) => Number.isInteger(Number(v)) && num(v, 6, 96),
   finder_down_percent: (v) => num(v, 0, 90),
+  tradein_base_small: (v) => num(v, 500, 1000000),
+  tradein_base_sedan: (v) => num(v, 500, 1000000),
+  tradein_base_suv: (v) => num(v, 500, 1000000),
+  tradein_base_premium: (v) => num(v, 500, 1000000),
+  tradein_age_percent: (v) => num(v, 0, 60),
+  tradein_range_percent: (v) => num(v, 0, 50),
+  tradein_offer_days: (v) => Number.isInteger(Number(v)) && num(v, 1, 60),
+  eta_stock_days: (v) => Number.isInteger(Number(v)) && num(v, 0, 60),
+  eta_order_days: (v) => Number.isInteger(Number(v)) && num(v, 0, 365),
   fuel_price_usd_per_l: (v) => num(v, 0, 100),
   electricity_usd_per_kwh: (v) => num(v, 0, 100),
   referral_credit_usd: (v) => num(v, 0, 100000),

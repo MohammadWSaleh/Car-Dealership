@@ -86,6 +86,39 @@ module.exports = function catalogue(ctx) {
   r.get('/catalogue/finder-config', (req, res) => {
     res.json({ rate_percent: settings.num('default_interest'), term_months: settings.num('finder_term_months'), down_percent: settings.num('finder_down_percent') });
   });
+  // F2: Lebanon EV savings calculator (fuel and electricity prices are staff-set settings)
+  r.get('/catalogue/ev-savings', (req, res) => {
+    const ev = core.getTrim(req.query.trim_id);
+    if (!ev || !ev.active) throw notFound('Trim');
+    if (ev.fuel_type === 'petrol' || ev.fuel_type === 'hybrid') throw bad('not_alternative_fuel', 'Choose an electric or plug-in hybrid trim');
+    const km = Number(req.query.daily_km ?? 40);
+    if (!Number.isFinite(km) || km < 1 || km > 500) throw bad('invalid_daily_km', 'Daily distance must be between 1 and 500 km');
+    let petrol = req.query.petrol_trim_id ? core.getTrim(req.query.petrol_trim_id) : null;
+    if (req.query.petrol_trim_id && !petrol) throw notFound('Trim');
+    if (petrol && petrol.fuel_type !== 'petrol') throw bad('not_petrol', 'The comparison trim must be a petrol trim');
+    const evPrice = core.effectivePrice(ev);
+    if (!petrol) { // default: the petrol car of the same body type closest in price, else the closest petrol car
+      const all = db.prepare("SELECT * FROM trims WHERE active = 1 AND fuel_type = 'petrol' AND l_per_100km IS NOT NULL").all();
+      const rank = (x) => [x.body_type === ev.body_type ? 0 : 1, Math.abs(core.effectivePrice(x) - evPrice)];
+      petrol = all.sort((a, b) => { const ra = rank(a); const rb = rank(b); return ra[0] - rb[0] || ra[1] - rb[1]; })[0];
+      if (!petrol) throw notFound('Petrol trim');
+    }
+    const out = calc.evSavings({ ev, evPrice, petrol, petrolPrice: core.effectivePrice(petrol), km: km * 365, years: 5,
+      fuelPrice: settings.num('fuel_price_usd_per_l'), elecPrice: settings.num('electricity_usd_per_kwh') });
+    res.json({ ev: { id: ev.id, label: core.trimLabel(ev), price_usd: evPrice }, petrol: { id: petrol.id, label: core.trimLabel(petrol), price_usd: core.effectivePrice(petrol) },
+      daily_km: km, fuel_price_usd_per_l: settings.num('fuel_price_usd_per_l'), electricity_usd_per_kwh: settings.num('electricity_usd_per_kwh'), ...out });
+  });
+  // F3: public price history of a trim, plus how long a quoted price stays locked
+  r.get('/catalogue/trims/:id/price-trend', (req, res) => {
+    const t = core.getTrim(req.params.id);
+    if (!t || !t.active) throw notFound('Trim');
+    const rows = db.prepare('SELECT new_price price, changed_at at FROM price_history WHERE trim_id = ? ORDER BY id').all(t.id);
+    const current = core.effectivePrice(t);
+    const points = rows.map((x) => ({ at: x.at, price: x.price }));
+    if (!points.length || points[points.length - 1].price !== t.price_usd) points.push({ at: clock.iso(), price: t.price_usd });
+    const prices = points.map((p) => p.price);
+    res.json({ points, current_usd: current, list_price_usd: t.price_usd, lowest_usd: Math.min(...prices), highest_usd: Math.max(...prices), changes: Math.max(0, points.length - 1), lock_days: settings.num('quotation_days') });
+  });
   // FR-CAT-07: yearly running cost, hybrid / electric vs a chosen petrol trim
   r.get('/catalogue/running-cost', (req, res) => {
     const a = core.getTrim(req.query.trim_id); const b = core.getTrim(req.query.petrol_trim_id);

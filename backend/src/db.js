@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS test_drives(
   name TEXT, phone TEXT, email TEXT, language TEXT DEFAULT 'en', slot_start TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'booked' CHECK(status IN ('booked','cancelled','completed')),
   license_verified INTEGER NOT NULL DEFAULT 0, license_verified_by INTEGER, battery_percent INTEGER, feedback TEXT,
-  reminder_sent INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL);
+  reminder_sent INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL, checked_in_at TEXT);
 CREATE UNIQUE INDEX IF NOT EXISTS ux_td_slot ON test_drives(car_id, slot_start) WHERE status = 'booked';
 
 CREATE TABLE IF NOT EXISTS documents(
@@ -143,6 +143,10 @@ CREATE INDEX IF NOT EXISTS ix_payments_deal ON payments(deal_id);
 CREATE TABLE IF NOT EXISTS trim_images(
   id INTEGER PRIMARY KEY, trim_id INTEGER NOT NULL REFERENCES trims(id), color TEXT, file TEXT NOT NULL, mime TEXT NOT NULL,
   position INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS trade_ins(
+  id INTEGER PRIMARY KEY, customer_id INTEGER, deal_id INTEGER, segment TEXT NOT NULL, brand TEXT, model TEXT, year INTEGER NOT NULL, mileage_km INTEGER NOT NULL,
+  condition TEXT NOT NULL, est_low REAL NOT NULL, est_high REAL NOT NULL, name TEXT, phone TEXT, email TEXT, language TEXT DEFAULT 'en',
+  status TEXT NOT NULL DEFAULT 'estimated' CHECK(status IN ('estimated','requested','offered')), offer_usd REAL, offer_valid_until TEXT, offered_by INTEGER, created_at TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS ix_trim_images ON trim_images(trim_id, position);
 CREATE INDEX IF NOT EXISTS ix_trims_filter ON trims(brand, body_type, fuel_type, price_usd);
 `;
@@ -153,6 +157,8 @@ function openDb(file) {
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   db.exec(SCHEMA);
+  // databases created before F5 lack the check-in column
+  if (!db.prepare('PRAGMA table_info(test_drives)').all().some((c) => c.name === 'checked_in_at')) db.exec('ALTER TABLE test_drives ADD COLUMN checked_in_at TEXT');
   return db;
 }
 module.exports = { openDb };

@@ -245,7 +245,7 @@ def browser(S, T):
         n1 = pg.locator('a[href^="/cars/"]').count(); url1 = pg.url
         pg.reload(); pg.wait_for_selector('a[href^="/cars/"]'); n2 = pg.locator('a[href^="/cars/"]').count()
         rec('SYS-UI-UX-01', 'Home "find your car" opens the catalogue pre-filtered; the filters live in the address and survive a reload', 'max_price=35000' in url1 and 'fuel_type=electric' in url1 and 0 < n1 == n2 < 15, (url1, n1, n2))
-        pg.locator('input[type=range]').evaluate("e => { const s = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set; s.call(e, 31000); e.dispatchEvent(new Event('input', { bubbles: true })); }"); pg.wait_for_timeout(900)
+        pg.locator('input[aria-label="Budget up to"]').evaluate("e => { const s = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set; s.call(e, 31000); e.dispatchEvent(new Event('input', { bubbles: true })); }"); pg.wait_for_timeout(900)
         rec('SYS-UI-UX-02', 'The budget slider narrows the list and updates the address', 'max_price=31000' in pg.url and pg.locator('a[href^="/cars/"]').count() <= n1, pg.url)
         txt = pg.inner_text('body'); rec('SYS-UI-UX-03', 'Cards state that the price is fixed and show the availability', txt.count('Fixed price, no haggling') >= 1 and re.search(r'In stock|Arriving|Order only', txt) is not None, '')
         pg.goto(B + '/cars/1'); pg.wait_for_selector('[role=radio]'); first = pg.locator('[role=radio]').first; pg.locator('[role=radio]').nth(2).click()
@@ -275,7 +275,7 @@ def browser(S, T):
         rec('SYS-UI-UX-10', 'The customer account home shows the current order, the next step, a progress bar and a contact button', 'Next step' in card and pg.locator('[role=progressbar]').count() == 1 and 'Contact us' in card, card[:160])
         pg.locator('button:has-text("Contact us")').click(); pg.wait_for_selector('[role=dialog]')
         rec('SYS-UI-UX-10b', 'The contact button opens the chat', pg.locator('[role=dialog]').count() >= 1)
-        pg = newpage(tag='ally'); pg.goto(B + '/cars'); pg.keyboard.press('Tab'); focused = pg.evaluate("document.activeElement && document.activeElement.textContent")
+        pg = newpage(tag='ally'); pg.goto(B + '/cars'); pg.wait_for_selector('main#main'); pg.wait_for_timeout(500); pg.keyboard.press('Tab'); focused = pg.evaluate("document.activeElement && document.activeElement.textContent")
         rec('SYS-UI-A11Y-01', 'The first Tab stop is a "Skip to main content" link, and the page has a main landmark', 'Skip to main content' in (focused or '') and pg.locator('main#main').count() == 1, focused)
         pg.keyboard.press('Enter'); pg.wait_for_timeout(200)
         pg = newpage(tag='ar'); pg.goto(B + '/cars'); pg.evaluate("localStorage.setItem('fsm_digits','ar'); localStorage.setItem('fsm_lang','ar')"); pg.reload(); pg.wait_for_selector('a[href^="/cars/"]')
@@ -287,13 +287,13 @@ def browser(S, T):
             pg.evaluate(AXE); r = pg.evaluate("axe.run(document, {runOnly: ['wcag2a','wcag2aa']}).then(x => x.violations.filter(v => ['serious','critical'].includes(v.impact)).map(v => v.id + ' x' + v.nodes.length + ' ' + (v.nodes[0].target||[]).join(' ')))")
             return r
         axe_bad = {}
-        for who, urls in (('', ['/', '/home', '/cars', '/cars/1', '/login', '/compare']), ('customer@fsm.lb', ['/account']), ('consultant1@fsm.lb', ['/staff', '/staff/deals'])):
+        for who, urls in (('', ['/', '/home', '/cars', '/cars/1', '/login', '/compare', '/trade-in']), ('customer@fsm.lb', ['/account']), ('consultant1@fsm.lb', ['/staff', '/staff/deals'])):
             pg = newpage(tag='axe')
             if who: login(pg, who)
             for u in urls:
                 pg.goto(B + u); pg.wait_for_timeout(1200); v = axe_scan(pg)
                 if v: axe_bad[u] = v
-        rec('SYS-UI-A11Y-02', 'Automated WCAG 2 A/AA scan (axe-core) finds no serious or critical issue on 8 key pages', not axe_bad, axe_bad)
+        rec('SYS-UI-A11Y-02', 'Automated WCAG 2 A/AA scan (axe-core) finds no serious or critical issue on 9 key pages', not axe_bad, axe_bad)
         pg = newpage(tag='land'); pg.goto(B + '/'); pg.wait_for_selector('form input[type=email]')
         rec('SYS-UI-LAND-01', 'Opening the site link lands on the sign-in page, with a guest option and a create-account link', pg.url.rstrip('/') == B and pg.locator('input[type=password]').count() == 1 and pg.locator('a[href="/home"]:has-text("guest")').count() == 1 and pg.locator('a[href="/register"]').count() >= 1, pg.url)
         pg.fill('input[type=email]', 'customer@fsm.lb'); pg.fill('input[type=password]', 'wrong'); pg.click('button.btn-primary'); pg.wait_for_selector('[role=alert]')
@@ -307,6 +307,30 @@ def browser(S, T):
         pg = newpage(tag='reveal'); pg.goto(B + '/home'); pg.wait_for_timeout(500)
         before = pg.locator('.reveal:not(.reveal-in)').count(); pg.evaluate("window.scrollTo(0, document.body.scrollHeight)"); pg.wait_for_timeout(1500)
         rec('SYS-UI-ANIM-01', 'Sections below the hero reveal as the visitor scrolls (scroll animation)', before > 0 and pg.locator('.reveal:not(.reveal-in)').count() < before, (before, pg.locator('.reveal:not(.reveal-in)').count()))
+        # ---- F1..F6: demo features
+        pg = newpage(tag='f1'); pg.goto(B + '/cars'); pg.wait_for_selector('input[aria-label="Shop by monthly budget"]'); pg.wait_for_timeout(800)
+        sl = pg.locator('input[aria-label="Shop by monthly budget"]'); sl.focus(); pg.keyboard.press('Home'); pg.wait_for_timeout(800)
+        rec('SYS-UI-FEAT-01', 'Budget-first finder: the monthly slider is in the address, cards show a monthly payment and cars above the budget are listed separately (F1)', 'monthly=' in pg.url and pg.locator('text=/mo$/').count() > 3 and pg.locator('text=Above your monthly budget').count() == 1, pg.url)
+        pg = newpage(tag='f23'); pg.goto(B + '/home'); ev_id = pg.evaluate("fetch('/api/catalogue/trims?fuel_type=electric').then(r=>r.json()).then(j=>j[0].id)")
+        pg.goto(B + f'/cars/{ev_id}'); pg.wait_for_selector('svg[role=img] path.chart-line', timeout=15000); pg.wait_for_timeout(1500)
+        body = pg.inner_text('body')
+        rec('SYS-UI-FEAT-02', 'EV page shows the Lebanon savings calculator with a five-year cost chart (F2)', 'EV savings in Lebanon' in body and 'You save per year' in body and pg.locator('svg[role=img] path').count() >= 2)
+        rec('SYS-UI-FEAT-03', 'Car page shows the price history chart and the "price locked" badge (F3)', 'Price history' in body and 'Price locked 7 days' in body)
+        pg = newpage(tag='f4'); pg.goto(B + '/trade-in'); pg.wait_for_selector('button:has-text("Get my estimate")'); pg.click('button:has-text("Get my estimate")'); pg.wait_for_selector('text=Estimated trade-in value')
+        rec('SYS-UI-FEAT-04', 'Trade-in page gives an instant value range (F4)', pg.locator('text=/\\$[\\d,]+ – \\$[\\d,]+/').count() >= 1)
+        td = pg.evaluate("""(async () => { const d = new Date(); d.setDate(d.getDate() + 5); if (d.getDay() === 0) d.setDate(d.getDate() + 1);
+          const day = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+          const tr = await (await fetch('/api/catalogue/trims')).json(); const sl = await (await fetch('/api/testdrives/slots?trim_id=' + tr[0].id + '&date=' + day)).json();
+          const r = await fetch('/api/testdrives', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ trim_id: tr[0].id, slot_start: sl.slots[0].slot_start, contact: { name: 'Qr Tester', email: 'qr@example.com', phone: '+96170111222', consent_data: true } }) });
+          return r.json(); })()""")
+        pg.goto(B + f"/test-drive/manage?code={td['code']}"); pg.wait_for_selector('input[type=email]'); pg.fill('input[type=email]', 'qr@example.com'); pg.click('form button.btn-primary'); pg.wait_for_selector('img[alt^="QR code"]', timeout=15000); pg.wait_for_function("document.querySelector('img[alt^=\"QR code\"]').src.startsWith('data:image/png')")
+        rec('SYS-UI-FEAT-05', 'A booked test drive shows a QR pass with the booking code (F5)', pg.locator('img[alt^="QR code"]').count() == 1)
+        pg = newpage(tag='f5s'); login(pg, 'consultant1@fsm.lb'); pg.goto(B + '/staff/testdrives'); pg.wait_for_selector('input.font-mono'); pg.fill('input.font-mono', td['code']); pg.click('button:has-text("Check in")'); pg.wait_for_selector('[role=alert]')
+        rec('SYS-UI-FEAT-06', 'Staff check-in box rejects a booking that is for another day with a clear message (F5)', 'another day' in pg.inner_text('[role=alert]'), pg.inner_text('[role=alert]'))
+        pg = newpage(tag='f6'); login(pg, 'customer@fsm.lb'); pg.goto(B + '/account'); pg.wait_for_selector('a[href*="/account/orders/"]'); pg.locator('a[href*="/account/orders/"]').first.click(); pg.wait_for_selector('text=Order tracker', timeout=15000); pg.wait_for_selector('[role=progressbar]')
+        rec('SYS-UI-FEAT-07', 'The order page shows the smart tracker with an estimated delivery date and a progress bar (F6)', pg.locator('text=Estimated delivery').count() >= 1 and pg.locator('[aria-current=step]').count() == 1)
+        pg = newpage(tag='f4s'); login(pg, 'consultant1@fsm.lb'); pg.goto(B + '/staff/tradeins'); pg.wait_for_selector('h1, h2')
+        rec('SYS-UI-FEAT-08', 'Staff have a trade-ins page', 'Trade-ins' in pg.inner_text('body'))
         pg = newpage(tag='tbl'); login(pg, 'admin@fsm.lb'); pg.goto(B + '/staff/audit'); pg.wait_for_selector('table thead th button', timeout=15000)
         pos = pg.evaluate("getComputedStyle(document.querySelector('table thead')).position")
         rec('SYS-UI-TBL-01', 'Staff tables have sortable column headers and a sticky header row', pos == 'sticky', pos)

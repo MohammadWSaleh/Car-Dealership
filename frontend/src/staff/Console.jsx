@@ -12,6 +12,7 @@ import { CatalogueAdmin } from './CatalogueAdmin.jsx';
 import { InventoryPage } from './Inventory.jsx';
 import { DeliveryDetail, DeliveryPage } from './Delivery.jsx';
 import { OwnersAdmin } from './OwnersAdmin.jsx';
+import { TradeInsStaff } from './TradeInsStaff.jsx';
 const ReportsPage = lazy(() => import('./Reports.jsx').then((m) => ({ default: m.ReportsPage })));
 import { AuditPage, BackupsPage, DataRequestsPage, OutboxPage, SettingsPage, UsersPage } from './Admin.jsx';
 import { ExceptionsPage } from './Exceptions.jsx';
@@ -21,6 +22,7 @@ const NAV = [
   { to: '', key: 'dashboard', roles: ['sales_consultant', 'sales_manager', 'general_manager', 'accountant', 'delivery_coordinator', 'administrator'], end: true },
   { to: 'deals', key: 'deals', roles: ['sales_consultant', 'sales_manager', 'general_manager'] },
   { to: 'testdrives', key: 'testdrives', roles: ['sales_consultant', 'sales_manager'] },
+  { to: 'tradeins', key: 'tradeins', roles: ['sales_consultant', 'sales_manager'] },
   { to: 'exceptions', key: 'exceptions', roles: ['sales_consultant', 'sales_manager'] },
   { to: 'payments', key: 'payments', roles: ['accountant', 'sales_manager', 'general_manager', 'sales_consultant'] },
   { to: 'invoices', key: 'invoices', roles: ['accountant', 'sales_manager', 'general_manager'] },
@@ -48,7 +50,7 @@ export default function Console() {
       <section className="min-w-0">
         <Routes>
           <Route index element={<Dashboard />} /><Route path="deals" element={<DealsPage />} /><Route path="deals/:id" element={<DealDetail />} />
-          <Route path="testdrives" element={<TestDrivesStaff />} /><Route path="exceptions" element={<ExceptionsPage />} />
+          <Route path="testdrives" element={<TestDrivesStaff />} /><Route path="exceptions" element={<ExceptionsPage />} /><Route path="tradeins" element={<TradeInsStaff />} />
           <Route path="payments" element={<PaymentsPage />} /><Route path="invoices" element={<InvoicesPage />} />
           <Route path="catalogue" element={<CatalogueAdmin />} /><Route path="inventory" element={<InventoryPage />} />
           <Route path="delivery" element={<DeliveryPage />} /><Route path="delivery/:id" element={<DeliveryDetail />} />

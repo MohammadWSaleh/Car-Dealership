@@ -5,7 +5,7 @@ const { bad, conflict, notFound, forbidden, required, isEmail } = require('../ut
 
 // FR-ADM-01..04, FR-NOT-01/02 (outbox view), NFR-REL-01
 const ROLES = ['customer', 'sales_consultant', 'sales_manager', 'general_manager', 'accountant', 'delivery_coordinator', 'administrator'];
-const COMMERCIAL_KEYS = ['default_interest', 'finder_term_months', 'finder_down_percent', 'fuel_price_usd_per_l', 'electricity_usd_per_kwh', 'referral_credit_usd'];
+const COMMERCIAL_KEYS = ['default_interest', 'finder_term_months', 'finder_down_percent', 'tradein_base_small', 'tradein_base_sedan', 'tradein_base_suv', 'tradein_base_premium', 'tradein_age_percent', 'tradein_range_percent', 'tradein_offer_days', 'eta_stock_days', 'eta_order_days', 'fuel_price_usd_per_l', 'electricity_usd_per_kwh', 'referral_credit_usd'];
 
 module.exports = function admin(ctx) {
   const { db, auth, audit, notify, settings, config } = ctx;

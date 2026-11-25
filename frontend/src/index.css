@@ -109,3 +109,13 @@ html[dir='rtl'] .streak { animation-direction: reverse; }
 .theme-dark .text-red-600 { color: #fca5a5; } .theme-dark .text-amber-700 { color: #fcd34d; } .theme-dark .text-sky-700 { color: #7dd3fc; }
 .theme-dark .text-brand-900 { color: #cfe8ff; } .theme-dark .bg-brand-50.text-brand-900 { background: rgba(31,111,235,.2); }
 html:has(.theme-dark) { background: #111; color-scheme: dark; }
+
+/* ---------- F2/F3/F6: charts and order tracker ---------- */
+.chart-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: chart-draw 1.4s ease-out forwards; }
+@keyframes chart-draw { to { stroke-dashoffset: 0; } }
+.tracker-bar { animation: bar-in 1.2s ease-out; }
+@keyframes bar-in { from { width: 0; } }
+.tracker-pulse { animation: tr-pulse 2s infinite; }
+@keyframes tr-pulse { 0% { box-shadow: 0 0 0 0 rgba(21,88,199,.5); } 70% { box-shadow: 0 0 0 8px rgba(21,88,199,0); } 100% { box-shadow: 0 0 0 0 rgba(21,88,199,0); } }
+@media (prefers-reduced-motion: reduce) { .chart-line { animation: none !important; stroke-dashoffset: 0; } .tracker-bar, .tracker-pulse { animation: none !important; } }
+.theme-dark .bg-emerald-50 { background: rgba(16,185,129,.16); } .theme-dark .text-emerald-700 { color: #6ee7b7; }
