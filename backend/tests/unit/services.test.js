@@ -33,7 +33,7 @@ describe('NFR-SEC-02/03 auth service', () => {
 });
 
 describe('FR-NOT-01/02 notification templates', () => {
-  const params = { car: 'Kia EV6', slot: '20/12/2026 10:00', code: 'ABC123', number: 'Q-1', total: 100, valid_until: '27/12/2026', amount: 100, currency: 'USD', method: 'cash', amount_usd: 100, reason: 'r', card: 'FSM-1', balance: 5, title: 'Spring event', description: 'Details', type: 'export', due: '20/12/2026', message: 'Low stock', name: 'Karim', source: 'web_form', status: 'approved' };
+  const params = { car: 'Kia EV6', slot: '20/12/2026 10:00', code: 'ABC123', number: 'Q-1', total: 100, valid_until: '27/12/2026', amount: 100, currency: 'USD', method: 'cash', amount_usd: 100, reason: 'r', card: 'FSM-1', balance: 5, title: 'Spring event', description: 'Details', type: 'export', due: '20/12/2026', message: 'Low stock', name: 'Karim', source: 'web_form', status: 'approved', stage: 'your car is reserved', stage_ar: 'تم حجز سيارتك', eta: '20/12/2026', offer: 9000, vehicle: 'Honda Civic 2021' };
   it('every template renders in English and Arabic with no missing values', () => {
     const n = notifyService({ db: t.ctx.db });
     for (const tpl of n.templates) for (const language of ['en', 'ar']) {

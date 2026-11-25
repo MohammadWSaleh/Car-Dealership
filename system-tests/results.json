@@ -51,7 +51,7 @@
   "id": "SYS-SEC-LOCK",
   "name": "Account locks after 5 failed attempts even for the right password (NFR-SEC-03)",
   "pass": true,
-  "detail": "(423, {'error': {'code': 'account_locked', 'message': 'Account locked until 2026-11-23T23:06:14.304Z', 'details': {'locked_until': '2026-11-23T23:06:14.304Z'}}})"
+  "detail": "(423, {'error': {'code': 'account_locked', 'message': 'Account locked until 2026-11-25T20:40:30.254Z', 'details': {'locked_until': '2026-11-25T20:40:30.254Z'}}})"
  },
  {
   "id": "SYS-SEC-ERR",
@@ -81,13 +81,13 @@
   "id": "SYS-PERF-01",
   "name": "50 concurrent users x 10 requests on catalogue pages, 95% under 3 s (NFR-PERF-01)",
   "pass": true,
-  "detail": "p95=117 ms"
+  "detail": "p95=160 ms"
  },
  {
   "id": "SYS-PERF-02",
   "name": "Stress: 200 concurrent users, no failed request, p95 still under 3 s",
   "pass": true,
-  "detail": "p95=1075 ms"
+  "detail": "p95=512 ms"
  },
  {
   "id": "SYS-TLS",
@@ -111,7 +111,7 @@
   "id": "SYS-UI-CAT-02",
   "name": "Cards show USD price and LBP equivalent (TC-CAT-03, NFR-LOC-01)",
   "pass": true,
-  "detail": "Skip to main content FULL STACK MOTORS Home Cars Compare EV check My test drive \u0627\u0644\u0639\u0631\u0628\u064a\u0629 Sign in Create account Filters B"
+  "detail": "Skip to main content FULL STACK MOTORS Home Cars Compare EV check Trade-in My test drive \u0627\u0644\u0639\u0631\u0628\u064a\u0629 Sign in Create account "
  },
  {
   "id": "SYS-UI-CAT-03",
@@ -123,7 +123,7 @@
   "id": "SYS-UI-CAT-04",
   "name": "Trim page shows price, stock status, inclusions and calculators (TC-CAT-03/04/06/07)",
   "pass": true,
-  "detail": "Skip to main content FULL STACK MOTORS Home Cars Compare EV check My test drive \u0627\u0644\u0639\u0631\u0628\u064a\u0629 Sign in Create account Colour: White Toyota Corolla  1.6 Comfo"
+  "detail": "Skip to main content FULL STACK MOTORS Home Cars Compare EV check Trade-in My test drive \u0627\u0644\u0639\u0631\u0628\u064a\u0629 Sign in Create account Colour: White Toyota Corolla  "
  },
  {
   "id": "SYS-UI-CAT-05",
@@ -171,13 +171,13 @@
   "id": "SYS-UI-EV-01",
   "name": "EV readiness check returns a verdict with reasons (TC-EV-01/02)",
   "pass": true,
-  "detail": "Skip to main content FULL STACK MOTORS Home Cars Compare3 EV check My test drive \u0627\u0644\u0639\u0631\u0628\u064a\u0629 Sign in Create account EV check  Answer a few questions to see whether an electric car fits your daily life in "
+  "detail": "Skip to main content FULL STACK MOTORS Home Cars Compare3 EV check Trade-in My test drive \u0627\u0644\u0639\u0631\u0628\u064a\u0629 Sign in Create account EV check  Answer a few questions to see whether an electric car fits your daily"
  },
  {
   "id": "SYS-UI-ACC-01",
   "name": "A new customer can register with consent and lands logged in on the home page (TC-ACC-01/02)",
   "pass": true,
-  "detail": "http://127.0.0.1:56633/home"
+  "detail": "http://127.0.0.1:44281/home"
  },
  {
   "id": "SYS-UI-TD-01",
@@ -201,13 +201,13 @@
   "id": "SYS-UI-UX-01",
   "name": "Home \"find your car\" opens the catalogue pre-filtered; the filters live in the address and survive a reload",
   "pass": true,
-  "detail": "('http://127.0.0.1:56633/cars?max_price=35000&fuel_type=electric', 4, 4)"
+  "detail": "('http://127.0.0.1:44281/cars?max_price=35000&fuel_type=electric', 4, 4)"
  },
  {
   "id": "SYS-UI-UX-02",
   "name": "The budget slider narrows the list and updates the address",
   "pass": true,
-  "detail": "http://127.0.0.1:56633/cars?max_price=31000&fuel_type=electric"
+  "detail": "http://127.0.0.1:44281/cars?max_price=31000&fuel_type=electric"
  },
  {
   "id": "SYS-UI-UX-03",
@@ -271,7 +271,7 @@
  },
  {
   "id": "SYS-UI-A11Y-02",
-  "name": "Automated WCAG 2 A/AA scan (axe-core) finds no serious or critical issue on 8 key pages",
+  "name": "Automated WCAG 2 A/AA scan (axe-core) finds no serious or critical issue on 9 key pages",
   "pass": true,
   "detail": "{}"
  },
@@ -279,7 +279,7 @@
   "id": "SYS-UI-LAND-01",
   "name": "Opening the site link lands on the sign-in page, with a guest option and a create-account link",
   "pass": true,
-  "detail": "http://127.0.0.1:56633/"
+  "detail": "http://127.0.0.1:44281/"
  },
  {
   "id": "SYS-UI-LAND-02",
@@ -291,13 +291,13 @@
   "id": "SYS-UI-LAND-03",
   "name": "Signing in goes straight to the home page",
   "pass": true,
-  "detail": "http://127.0.0.1:56633/home"
+  "detail": "http://127.0.0.1:44281/home"
  },
  {
   "id": "SYS-UI-LAND-04",
   "name": "Continue as guest opens the public home page with the hero and the car finder",
   "pass": true,
-  "detail": "http://127.0.0.1:56633/home"
+  "detail": "http://127.0.0.1:44281/home"
  },
  {
   "id": "SYS-UI-LAND-05",
@@ -312,6 +312,54 @@
   "detail": "(13, 8)"
  },
  {
+  "id": "SYS-UI-FEAT-01",
+  "name": "Budget-first finder: the monthly slider is in the address, cards show a monthly payment and cars above the budget are listed separately (F1)",
+  "pass": true,
+  "detail": "http://127.0.0.1:44281/cars?monthly=100"
+ },
+ {
+  "id": "SYS-UI-FEAT-02",
+  "name": "EV page shows the Lebanon savings calculator with a five-year cost chart (F2)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-FEAT-03",
+  "name": "Car page shows the price history chart and the \"price locked\" badge (F3)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-FEAT-04",
+  "name": "Trade-in page gives an instant value range (F4)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-FEAT-05",
+  "name": "A booked test drive shows a QR pass with the booking code (F5)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-FEAT-06",
+  "name": "Staff check-in box rejects a booking that is for another day with a clear message (F5)",
+  "pass": true,
+  "detail": "This booking is for another day."
+ },
+ {
+  "id": "SYS-UI-FEAT-07",
+  "name": "The order page shows the smart tracker with an estimated delivery date and a progress bar (F6)",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "id": "SYS-UI-FEAT-08",
+  "name": "Staff have a trade-ins page",
+  "pass": true,
+  "detail": ""
+ },
+ {
   "id": "SYS-UI-TBL-01",
   "name": "Staff tables have sortable column headers and a sticky header row",
   "pass": true,
@@ -321,7 +369,7 @@
   "id": "SYS-UI-DEAL-01",
   "name": "Consultant completes lead \u2192 quotation \u2192 deposit \u2192 contract in the browser (TC-DEAL-01/03/06, TC-PAY-01) (NFR-USA-02 proxy)",
   "pass": true,
-  "detail": "reserved=True contract=True 7.6s"
+  "detail": "reserved=True contract=True 7.7s"
  },
  {
   "id": "SYS-UI-ROLE-01",
@@ -333,7 +381,7 @@
   "id": "SYS-UI-ROLE-02",
   "name": "A consultant opening /staff/users sees no user list (forbidden / redirect) (TC-ADM-01)",
   "pass": true,
-  "detail": "http://127.0.0.1:56633/staff/users"
+  "detail": "http://127.0.0.1:44281/staff/users"
  },
  {
   "id": "SYS-UI-PORTAL-01",
@@ -393,18 +441,18 @@
   "id": "SYS-REL-01",
   "name": "A backup file is produced (manual trigger via admin API; daily timer is also started at boot) (NFR-REL-01)",
   "pass": true,
-  "detail": "(201, ['fsm-20261123-225410'])"
+  "detail": "(201, ['fsm-20261125-202845'])"
  },
  {
   "id": "SYS-REL-02",
   "name": "First start created an automatic backup without any request",
   "pass": true,
-  "detail": "data (set SEED_ON_EMPTY=0 to disable)...\nDemo data ready. Staff and customer accounts use the password Fsm@2026!\nFull Stack Motors running on http://localhost:50893\nBackup created fsm-20261123-225410\n"
+  "detail": "data (set SEED_ON_EMPTY=0 to disable)...\nDemo data ready. Staff and customer accounts use the password Fsm@2026!\nFull Stack Motors running on http://localhost:57167\nBackup created fsm-20261125-202845\n"
  },
  {
   "id": "SYS-REL-03",
   "name": "Restore script brings the database back to the backed-up state (data loss < 24 h) (NFR-REL-01)",
   "pass": true,
-  "detail": "('Restored fsm-20261123-225410 - start the server again.\\n', '', 0, 18, 18)"
+  "detail": "('Restored fsm-20261125-202845 - start the server again.\\n', '', 0, 18, 18)"
  }
 ]

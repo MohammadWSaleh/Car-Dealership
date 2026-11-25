@@ -69,7 +69,7 @@ function Promotions() {
 }
 function Commercial() {
   const { t } = useTranslation(); const [run, busy] = useAction(); const q = useQuery({ queryKey: ['settings'], queryFn: () => api.get('/settings') }); const [v, setV] = useState({});
-  const keys = ['default_interest', 'finder_term_months', 'finder_down_percent', 'fuel_price_usd_per_l', 'electricity_usd_per_kwh', 'referral_credit_usd'];
+  const keys = ['default_interest', 'finder_term_months', 'finder_down_percent', 'fuel_price_usd_per_l', 'electricity_usd_per_kwh', 'referral_credit_usd', 'tradein_base_small', 'tradein_base_sedan', 'tradein_base_suv', 'tradein_base_premium', 'tradein_age_percent', 'tradein_range_percent', 'tradein_offer_days', 'eta_stock_days', 'eta_order_days'];
   return <Loading q={q}>{(s) => <form className="card grid max-w-xl gap-3" onSubmit={async (e) => { e.preventDefault(); await run(() => api.put('/settings/commercial', Object.fromEntries(keys.map((k) => [k, Number(v[k] ?? s[k])]))), t('common.saved')); }}>
     {keys.map((k) => <Field key={k} label={t(`settings.${k}`)}><Input type="number" step="0.01" min="0" value={v[k] ?? s[k]} onChange={(e) => setV({ ...v, [k]: e.target.value })} /></Field>)}<button className="btn-primary w-fit" disabled={busy}>{t('common.save')}</button></form>}</Loading>;
 }

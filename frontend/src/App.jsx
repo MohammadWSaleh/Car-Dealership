@@ -10,6 +10,7 @@ import EVCheck from './pages/EVCheck.jsx';
 import { Login, Register } from './pages/Auth.jsx';
 import TestDriveManage from './pages/TestDriveManage.jsx';
 import Refer from './pages/Refer.jsx';
+import TradeIn from './pages/TradeIn.jsx';
 const Account = lazy(() => import('./pages/Account.jsx'));
 const Console = lazy(() => import('./staff/Console.jsx'));
 const Lazy = ({ children }) => <Suspense fallback={<Spinner />}>{children}</Suspense>;
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="cars/:id" element={<TrimDetail />} />
         <Route path="compare" element={<Compare />} />
         <Route path="ev-check" element={<EVCheck />} />
+        <Route path="trade-in" element={<TradeIn />} />
         <Route path="test-drive/manage" element={<TestDriveManage />} />
         <Route path="refer/:code" element={<Refer />} />
         <Route path="account/*" element={<Lazy><Account /></Lazy>} />

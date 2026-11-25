@@ -70,6 +70,17 @@ Either set `TLS_KEY`/`TLS_CERT`, or put Caddy in front using `deploy/Caddyfile` 
 
 A backup runs every day (SQLite online backup, 14 kept) and on demand under **Backups**. Restore: `npm run restore -- <backup-name>`.
 
+## Demo features (Phase IV extras)
+
+| Feature | Where | What it does |
+|---|---|---|
+| F1 Budget-first finder | `/cars` | A monthly-payment slider re-sorts the cars live; loan term, down payment and interest are staff settings |
+| F2 EV savings calculator | Electric / plug-in hybrid car page | Five-year cost chart against a petrol car, using staff-set fuel and electricity prices |
+| F3 Price history and lock | Every car page | Public price chart and a "price locked 7 days with your quote" badge |
+| F4 Trade-in estimate | `/trade-in`, staff **Trade-ins** | Instant value range from a formula with staff-set values; a consultant confirms an offer valid for a set number of days |
+| F5 QR test-drive pass | Booking confirmation, staff **Test drives** | QR code with the booking code; staff check the customer in by scanning (where the browser supports it) or typing the code |
+| F6 Smart order tracker | Customer order page | Steps with dates, estimated delivery date, delivery-day preparation and checklist, one notification per stage |
+
 ## Where things are
 
 ```

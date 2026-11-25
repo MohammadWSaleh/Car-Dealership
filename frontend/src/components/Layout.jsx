@@ -26,7 +26,7 @@ export default function Layout() {
   const link = ({ isActive }) => light
     ? `rounded-lg px-3 py-2 text-sm font-medium ${isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-700 hover:bg-slate-100'}`
     : `navlink ${isActive ? 'navlink-on' : ''}`;
-  const items = [['/home', t('nav.home'), 'home'], ['/cars', t('nav.cars')], ['/compare', t('nav.compare')], ['/ev-check', t('nav.ev_check')], ['/test-drive/manage', t('nav.my_booking')]];
+  const items = [['/home', t('nav.home'), 'home'], ['/cars', t('nav.cars')], ['/compare', t('nav.compare')], ['/ev-check', t('nav.ev_check')], ['/trade-in', t('nav.trade_in')], ['/test-drive/manage', t('nav.my_booking')]];
   const nav = (cls) => items.map(([to, label]) => <NavLink key={to} to={to} end={to === '/home'} className={cls}>{label}{to === '/compare' && ids.length > 0 && <span className="ms-1 rounded-full bg-brand-600 px-1.5 text-xs text-white">{ids.length}</span>}</NavLink>);
   const account = user ? <>
     <Link className={light ? 'btn-secondary btn-sm' : 'btn-outline btn-sm'} to={isStaff(user) ? '/staff' : '/account'}>{isStaff(user) ? t('nav.console') : t('nav.account')}</Link>

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { Field, Input, Notice, Spinner, useAction } from './ui.jsx';
+import { QrPass } from './Features.jsx';
 import { dmy, ymd } from '../utils.js';
 
 // FR-TD-01 / FR-TD-04 / NFR-USA-03: the nearest free slot is already selected; a visitor only adds contact details and presses Book.
@@ -22,6 +23,7 @@ export default function BookTestDrive({ trim }) {
   const slots = useQuery({ queryKey: ['slots', trim.id, date], queryFn: () => api.get(`/testdrives/slots?trim_id=${trim.id}&date=${date}`) });
   const { i18n } = useTranslation();
   if (done) return <div className="space-y-2"><Notice tone="ok"><b>{t('td.booked')}</b><br />{t('td.code')}: <b className="font-mono">{done.code}</b> · {dmy(done.slot_start, true)}</Notice>
+    <QrPass code={done.code} />
     <p className="text-sm text-slate-600">{t('td.confirmation_sent')}</p>
     <Link className="btn-secondary btn-sm" to={user ? '/account' : `/test-drive/manage?code=${done.code}`}>{t('td.manage')}</Link></div>;
   const submit = async (e) => {

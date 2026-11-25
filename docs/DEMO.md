@@ -14,3 +14,14 @@ Start the system (`cd backend && npm start`), open http://localhost:3000. Passwo
 | 10:00 | `delivery@fsm.lb` | Inspection checklist, registration documents, handover form, signed copy → delivered, owner joins Owners Circle. | FR-DEL-*, FR-OC-01 |
 | 11:00 | `admin@fsm.lb` | Audit log shows who changed the price; notification outbox (Arabic message); backups. | FR-ADM-*, FR-NOT-*, NFR-REL-01 |
 | 11:30 | Presenter | GitHub/OpenProject view, 95 automated tests passing, traceability matrix, limitations. | — |
+
+## Extra demo moments (F1-F6)
+
+| What | Where | Say |
+|---|---|---|
+| Drag the monthly budget slider | `/cars` | "Customers think in monthly payments, so the catalogue sorts itself by what they can afford." |
+| EV savings chart | Open a Kia EV6 | "Fuel and electricity prices are set by the sales manager, so the chart always matches today's prices." |
+| Price history and lock badge | Any car page | "The price is public, fixed, and locked once a customer has a quote." |
+| Trade-in estimate | `/trade-in` | "An instant range, then a consultant confirms a real offer valid for 7 days." |
+| QR pass and check-in | Book a test drive, then staff **Test drives** | "The customer shows the QR, the consultant checks them in; no paperwork." |
+| Order tracker | `customer@fsm.lb` -> order | "Every step, an estimated delivery date, and what the customer should bring on the day." |

@@ -8,9 +8,9 @@ Test session date: 22/11/2026. Three levels were run on the complete system. All
 |---|---|---|---|---|
 | **Unit** | Pure logic and services in isolation: instalment, running cost, VAT split, stamp duty, EV rules, validators, date/clock, settings validation, password hashing, token lifetimes, notification templates (EN/AR), document encryption, PDF receipt; frontend helpers (money, dates, API client, i18n) | Vitest | 67 backend + 19 frontend | **all pass** |
 | **Component** | Each backend module through its API with the real database (accounts, catalogue, test drives, assistant, EV, deals, payments, inventory, delivery, Owners Circle, admin, reports, platform); each React component/page with mocked API | Vitest, supertest, Testing Library | 96 backend + 34 frontend | **all pass** |
-| **System** | The whole product running as a separate server process with its own SQLite file: (a) the 96 module tests re-run over real HTTP against that process; (b) 68 black-box checks: real browser journeys, TLS, security, load, backup/restore, responsive layout, other browser engines | Vitest over HTTP; Playwright (Chromium, Firefox, WebKit) | 96 + 68 | **all pass** |
+| **System** | The whole product running as a separate server process with its own SQLite file: (a) the 111 module tests re-run over real HTTP against that process; (b) 76 black-box checks: real browser journeys, TLS, security, load, backup/restore, responsive layout, other browser engines | Vitest over HTTP; Playwright (Chromium, Firefox, WebKit) | 96 + 68 | **all pass** |
 
-Totals: 164 backend tests + 61 frontend tests + 96 over-HTTP re-runs + 68 system checks. Translation check: 517 keys used, 705 English = 705 Arabic.
+Totals: 178 backend tests + 69 frontend tests + 111 over-HTTP re-runs + 76 system checks. Translation check: 589 keys used, 821 English = 821 Arabic.
 
 **Coverage of the SRS: all 85 requirements (70 functional, 15 non-functional) are exercised by at least one automated test; see section 3.** Four non-functional requirements also need a human measurement (section 5).
 
@@ -149,7 +149,18 @@ Columns: **Unit** = number of unit tests naming the requirement; **Component** =
 | NFR-USA-03 | At least 80% of test customers shall book a test drive in 3 minutes or less without help. | 0 | 0 | - | 1 | manual |
 | NFR-USA-04 | Pages shall display correctly on screen widths from 360 to 1920 pixels. | 0 | 0 | - | 1 | manual |
 
-## 4. System checks (68)
+### Batch 4 (demo features F1-F6)
+
+| Feature | Tests |
+|---|---|
+| F1 Budget-first finder (monthly slider; loan term, down payment and interest are staff settings) | backend `catalogue.test.js` (finder config, manager change, validation); frontend unit (payment formula equals the backend); system SYS-UI-FEAT-01 |
+| F2 EV savings calculator (staff-set fuel and electricity prices) | backend `features.test.js` (series, price change, input errors, break-even rules); system SYS-UI-FEAT-02 |
+| F3 Price history and "price locked" badge | backend (public trend follows price changes, 404); system SYS-UI-FEAT-03 |
+| F4 Trade-in estimate and confirmed offer | backend (formula ordering, validation, lead creation, offer validity and expiry, notification, offer only after a request); system SYS-UI-FEAT-04 and 08 |
+| F5 QR test-drive pass and staff check-in | backend (check-in once, today only, active bookings only, role); component tests (QR image, check-in messages); system SYS-UI-FEAT-05 and 06 |
+| F6 Smart order tracker (estimate, steps, readiness, one notification per stage) | backend (steps, privacy, notification, estimate rules); component tests; system SYS-UI-FEAT-07 |
+
+## 4. System checks (76)
 
 | ID | Check | Result |
 |---|---|---|

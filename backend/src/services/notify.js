@@ -68,6 +68,14 @@ const T = {
     en: (p) => ({ subject: 'Stock alert', body: p.message }),
     ar: (p) => ({ subject: 'تنبيه المخزون', body: p.message }),
   },
+  order_stage: {
+    en: (p) => ({ subject: `Your ${p.car}: ${p.stage}`, body: `Update on your ${p.car}: ${p.stage}. Estimated delivery: ${p.eta}. You can follow every step in your account.` }),
+    ar: (p) => ({ subject: `سيارتك ${p.car}: ${p.stage_ar}`, body: `تحديث بخصوص سيارتك ${p.car}: ${p.stage_ar}. موعد التسليم المتوقع: ${p.eta}. يمكنك متابعة كل خطوة من حسابك.` }),
+  },
+  tradein_offer: {
+    en: (p) => ({ subject: 'Your trade-in offer', body: `We offer ${usd(p.offer)} for your ${p.vehicle}. The offer is valid until ${p.valid_until}.` }),
+    ar: (p) => ({ subject: 'عرض استبدال سيارتك', body: `نعرض ${usd(p.offer)} مقابل سيارتك ${p.vehicle}. العرض صالح حتى ${p.valid_until}.` }),
+  },
   exception_decided: {
     en: (p) => ({ subject: 'Exception request decided', body: `Your exception request "${p.description}" was ${p.status}. ${p.reason || ''}` }),
     ar: (p) => ({ subject: 'تم البت في طلب الاستثناء', body: `طلب الاستثناء "${p.description}" ${p.status}. ${p.reason || ''}` }),

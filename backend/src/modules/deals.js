@@ -102,6 +102,26 @@ module.exports = function deals(ctx) {
     res.json(rows.map((d) => ({ id: d.id, contact_name: d.contact_name, contact_phone: d.contact_phone, contact_email: d.contact_email, source: d.source, stage: d.stage, car_label: core.trimLabel(core.getTrim(d.trim_id)),
       consultant_name: d.consultant_name, created_at: d.created_at, updated_at: d.updated_at, waiting_for_car: !d.car_id && ['reserved', 'contract_signed', 'paid'].includes(d.stage), ...core.financials(d.id) })));
   });
+  // F6: smart order tracker (steps with dates, estimated delivery, delivery-day readiness)
+  r.get('/deals/:id/tracker', auth.requireRole(), (req, res) => {
+    const d = dealFor(req, req.params.id);
+    const hist = db.prepare('SELECT to_stage, MIN(at) at FROM deal_history WHERE deal_id = ? GROUP BY to_stage').all(d.id);
+    const at = Object.fromEntries(hist.map((h) => [h.to_stage, h.at]));
+    const car = d.car_id ? db.prepare('SELECT status, arrival_date FROM cars WHERE id = ?').get(d.car_id) : null;
+    const bk = db.prepare("SELECT slot_start FROM delivery_bookings WHERE deal_id = ? AND status = 'booked'").get(d.id);
+    const insp = db.prepare('SELECT COUNT(*) total, COALESCE(SUM(passed),0) passed FROM inspection_items WHERE deal_id = ?').get(d.id);
+    const regs = db.prepare('SELECT COUNT(*) total, COALESCE(SUM(ready),0) ready FROM registration_docs WHERE deal_id = ?').get(d.id);
+    const order = ['lead', 'quoted', 'reserved', 'contract_signed', 'paid', 'ready', 'delivered'];
+    const prepared = insp.total > 0 && insp.passed === insp.total && regs.ready === regs.total;
+    let idx = order.indexOf(d.stage);
+    if (d.stage === 'paid' && prepared) idx = order.indexOf('ready');
+    const lost = d.stage === 'lost';
+    const steps = order.map((k, i) => ({ key: k, done: !lost && i < idx || (!lost && d.stage === 'delivered'), current: !lost && i === idx && d.stage !== 'delivered', at: at[k === 'ready' ? 'paid' : k] || (k === 'lead' ? d.created_at : null) }));
+    const eta = d.stage === 'delivered' || lost ? null : calc.deliveryEta({ now: clock.now(), bookingSlot: bk && bk.slot_start, carStatus: car && car.status, arrivalDate: car && car.arrival_date,
+      stockDays: settings.num('eta_stock_days'), orderDays: settings.num('eta_order_days') });
+    res.json({ deal_id: d.id, stage: d.stage, lost, car: d.trim_id ? core.trimLabel(core.getTrim(d.trim_id)) : null, steps, eta,
+      booking: bk ? { slot_start: bk.slot_start } : null, readiness: { inspection: { passed: insp.passed, total: insp.total }, documents: { ready: regs.ready, total: regs.total } } });
+  });
   r.get('/deals/:id', auth.requireRole(), (req, res) => res.json(dealView(dealFor(req, req.params.id), req.user)));
   r.put('/deals/:id', STAFF_DEALS, (req, res) => {
     const d = dealFor(req, req.params.id, 'edit'); const b = req.body || {};

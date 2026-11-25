@@ -83,7 +83,7 @@ module.exports = function testdrives(ctx) {
     const trim = core.getTrim(t.trim_id);
     return { id: t.id, code: t.code, trim_id: t.trim_id, car: core.trimLabel(trim), fuel_type: trim.fuel_type, slot_start: t.slot_start, status: t.status,
       license_uploaded: !!lic, license_verified: !!t.license_verified, battery_percent: t.battery_percent, feedback: t.feedback,
-      battery_ok: trim.fuel_type === 'electric' ? (t.battery_percent == null ? null : t.battery_percent >= 80) : null,
+      checked_in_at: t.checked_in_at, battery_ok: trim.fuel_type === 'electric' ? (t.battery_percent == null ? null : t.battery_percent >= 80) : null,
       ...(staff ? { name: t.name, phone: t.phone, email: t.email, deal_id: t.deal_id, license_document_id: lic ? lic.id : null } : {}) };
   };
   // owner (logged in), staff, or a guest holding the booking code + email
@@ -112,6 +112,17 @@ module.exports = function testdrives(ctx) {
     const td = book({ trimId: Number(b.trim_id), slot: b.slot_start, user: req.user && req.user.role === 'customer' ? req.user : null, contact: b.contact || b, language: b.language });
     if (req.user && req.user.role !== 'customer') { /* staff booking for walk-ins is not supported here */ }
     res.status(201).json(view(td, false));
+  });
+  // F5: staff scan the QR pass (or type the code) when the customer arrives
+  r.post('/testdrives/check-in', CONSULTANT, (req, res) => {
+    const code = String((req.body || {}).code || '').trim().toUpperCase();
+    const td = code ? db.prepare('SELECT * FROM test_drives WHERE upper(code) = ?').get(code) : null;
+    if (!td) throw notFound('Booking');
+    if (td.status !== 'booked') throw conflict('booking_closed', 'This booking is no longer active');
+    if (td.slot_start.slice(0, 10) !== ymd(clock.now())) throw conflict('not_today', `This booking is for ${dmy(td.slot_start.slice(0, 10))}, not today`);
+    const already = !!td.checked_in_at;
+    if (!already) { db.prepare('UPDATE test_drives SET checked_in_at = ? WHERE id = ?').run(clock.iso(), td.id); audit(req.user.id, 'testdrive_checkin', 'test_drive', td.id, {}); }
+    res.json({ already_checked_in: already, booking: view(getTd(td.id), true) });
   });
   r.get('/testdrives/lookup', (req, res) => {
     const td = db.prepare('SELECT * FROM test_drives WHERE code = ?').get(String(req.query.code || ''));

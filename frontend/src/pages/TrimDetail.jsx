@@ -9,6 +9,7 @@ import EnquiryForm from '../components/EnquiryForm.jsx';
 import { useCompare } from '../components/compare.jsx';
 import { Badge, ErrorBox, Field, Input, Loading, Notice, Price, Select, Spinner } from '../components/ui.jsx';
 import { Availability } from './Catalogue.jsx';
+import { EvSavings, LockBadge, PriceTrend } from '../components/Features.jsx';
 import { lbp, num, usd, usd2 } from '../utils.js';
 
 function Installment({ trim }) {
@@ -56,6 +57,7 @@ export default function TrimDetail() {
           <div className="card space-y-2"><Price usd={x.price_usd} lbp={x.price_lbp} big />
             {x.promotion && <div><Badge tone="red">{t('catalogue.offer')}</Badge> <span className="ms-1 text-sm text-slate-500 line-through">{usd(x.list_price_usd)}</span></div>}
             <p className="text-xs font-semibold text-emerald-700">{t('detail.fixed')}</p>
+            <div><LockBadge days={7} /></div>
             <div className="grid gap-2 text-xs sm:grid-cols-2"><div><b>{t('detail.includes')}</b><ul className="list-disc ps-4">{x.price_includes.map((i) => <li key={i}>{i}</li>)}</ul></div><div><b>{t('detail.excludes')}</b><ul className="list-disc ps-4">{x.price_excludes.map((i) => <li key={i}>{i}</li>)}</ul></div></div>
             <div><Availability a={x.availability} /></div></div>
           <button className={cmp.ids.includes(x.id) ? 'btn-secondary' : 'btn-primary'} onClick={() => cmp.toggle(x.id)} disabled={!cmp.ids.includes(x.id) && cmp.full}>{cmp.ids.includes(x.id) ? t('detail.remove_compare') : t('detail.add_compare')}</button>
@@ -64,6 +66,8 @@ export default function TrimDetail() {
         <div className="card"><h2 className="mb-3 font-bold">{t('detail.specs')}</h2><dl className="divide-y text-sm">{SpecRows({ trim: x }).map(([k, v]) => <div key={k} className="flex justify-between py-2"><dt className="text-slate-500">{k}</dt><dd className="font-semibold">{v}</dd></div>)}</dl></div>
         <div className="card"><h2 className="mb-3 font-bold">{t('detail.installment')}</h2><Installment trim={x} /></div>
         {x.fuel_type !== 'petrol' && <div className="card"><h2 className="mb-3 font-bold">{t('detail.running')}</h2><RunningCost trim={x} /></div>}
+        {(x.fuel_type === 'electric' || x.fuel_type === 'plug_in_hybrid') && <div className="card lg:col-span-2"><h2 className="mb-3 font-bold">{t('evs.title')}</h2><EvSavings trim={x} /></div>}
+        <div className="card lg:col-span-2"><h2 className="mb-3 font-bold">{t('price.title')}</h2><PriceTrend trim={x} /></div>
         <div className="card"><h2 className="mb-3 font-bold">{t('detail.test_drive')}</h2><BookTestDrive trim={x} /></div>
         <div className="card lg:col-span-2"><h2 className="mb-3 font-bold">{t('detail.enquiry')}</h2><EnquiryForm trimId={x.id} /></div>
       </div></div>)}</Loading>;

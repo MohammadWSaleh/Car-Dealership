@@ -6,6 +6,7 @@ import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { Badge, ErrorBox, Field, FileInput, Input, Loading, Notice, Select, StatusBadge, Table, useAction } from '../components/ui.jsx';
 import { BookingCard } from './TestDriveManage.jsx';
+import { Tracker } from '../components/Features.jsx';
 import { dmy, usd, usd2, ymd } from '../utils.js';
 
 export function NextStepCard({ o }) {
@@ -71,10 +72,11 @@ function DeliverySlot({ deal }) {
 function Order() {
   const { id } = useParams(); const { t } = useTranslation(); const { user } = useAuth(); const qc = useQueryClient(); const [run, busy] = useAction(); const [name, setName] = useState(user?.name || ''); const [ok, setOk] = useState(false); const [file, setFile] = useState(null); const [refCode, setRefCode] = useState('');
   const q = useQuery({ queryKey: ['deal', id], queryFn: () => api.get(`/deals/${id}`) }); const reg = useQuery({ queryKey: ['registration', id], queryFn: () => api.get(`/me/deals/${id}/registration`), retry: false });
-  const refresh = () => { qc.invalidateQueries({ queryKey: ['deal', id] }); qc.invalidateQueries({ queryKey: ['overview'] }); qc.invalidateQueries({ queryKey: ['timeline', id] }); };
+  const refresh = () => { qc.invalidateQueries({ queryKey: ['deal', id] }); qc.invalidateQueries({ queryKey: ['overview'] }); qc.invalidateQueries({ queryKey: ['timeline', id] }); qc.invalidateQueries({ queryKey: ['tracker', id] }); };
   return <Loading q={q}>{(d) => (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-xl font-bold">{d.car_label}</h2><StatusBadge value={d.stage} /></div>
+      <section className="card"><h3 className="mb-2 font-bold">{t('tr.title')}</h3><Tracker dealId={id} /></section>
       <section className="card"><h3 className="mb-2 font-bold">{t('acc.progress')}</h3><Timeline dealId={id} /></section>
       <section className="card space-y-1 text-sm"><h3 className="mb-2 font-bold">{t('acc.money')}</h3>
         <div className="flex justify-between"><span>{t('acc.total')}</span><b>{usd2(d.financials.total_usd)}</b></div><div className="flex justify-between"><span>{t('acc.paid')}</span><b>{usd2(d.financials.paid_usd)}</b></div><div className="flex justify-between"><span>{t('acc.balance')}</span><b>{usd2(d.financials.balance_usd)}</b></div>

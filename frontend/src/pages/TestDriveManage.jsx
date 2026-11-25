@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { Badge, ErrorBox, Field, FileInput, Input, Notice, Select, StatusBadge, useAction } from '../components/ui.jsx';
+import { QrPass } from '../components/Features.jsx';
 import { dmy, ymd } from '../utils.js';
 
 // FR-TD-02 / FR-TD-03: guests find their booking with code + email; customers use the same screen from their account
@@ -17,6 +18,8 @@ export function BookingCard({ td: initial, creds }) {
   return (
     <div className="card space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2"><div><div className="font-bold">{td.car}</div><div className="text-sm text-slate-600">{dmy(td.slot_start, true)} · <span className="font-mono">{td.code}</span></div></div><StatusBadge value={td.status} /></div>
+      {td.status === 'booked' && <QrPass code={td.code} />}
+      {td.checked_in_at && <Badge tone="green">{t('td.checked_in')} {dmy(td.checked_in_at, true)}</Badge>}
       {td.status === 'booked' && <>
         <div className="flex flex-wrap items-center gap-2 text-sm">{t('td.license')}: {td.license_verified ? <Badge tone="green">{t('td.license_verified')}</Badge> : td.license_uploaded ? <Badge tone="amber">{t('td.license_pending')}</Badge> : <Badge tone="red">{t('td.license_missing')}</Badge>}</div>
         <div className="grid items-end gap-2 sm:grid-cols-[1fr_auto]"><FileInput onFile={setFile} label={t('td.license')} /><button className="btn-secondary btn-sm" disabled={!file || busy} onClick={upload}>{t('td.upload_license')}</button></div>
