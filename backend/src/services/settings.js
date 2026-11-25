@@ -15,6 +15,8 @@ const DEFAULTS = {
   hold_days: '30',                // default deposit price-hold period (FR-PAY-02)
   quotation_days: '7',            // quotation validity (FR-DEAL-03)
   default_interest: '8',          // yearly % for instalment calculator (FR-CAT-06)
+  finder_term_months: '60',       // F1: loan term used by the monthly-budget finder
+  finder_down_percent: '20',      // F1: down payment (% of price) used by the finder
   fuel_price_usd_per_l: '1.1',
   electricity_usd_per_kwh: '0.2',
   referral_credit_usd: '200',
@@ -36,6 +38,8 @@ const VALIDATORS = {
   hold_days: (v) => num(v, 1, 365),
   quotation_days: (v) => num(v, 1, 90),
   default_interest: (v) => num(v, 0, 100),
+  finder_term_months: (v) => Number.isInteger(Number(v)) && num(v, 6, 96),
+  finder_down_percent: (v) => num(v, 0, 90),
   fuel_price_usd_per_l: (v) => num(v, 0, 100),
   electricity_usd_per_kwh: (v) => num(v, 0, 100),
   referral_credit_usd: (v) => num(v, 0, 100000),

@@ -4,7 +4,7 @@
 # Replace the five usernames below first.
 set -euo pipefail
 R="${1:?usage: $0 OWNER/REPO}"
-WAJIH="github-user-1"; BADIH="github-user-2"; MUSTAFA="github-user-3"; MARIAM="github-user-4"; ALI="github-user-5"
+WAJIH="MohammadWSaleh"; BADIH="MohammadWSaleh"; MUSTAFA="MohammadWSaleh"; MARIAM="MohammadWSaleh"; ALI="MohammadWSaleh"
 
 gh label create feature -R "$R" -c 1558c7 -f >/dev/null
 gh label create bug -R "$R" -c d73a4a -f >/dev/null

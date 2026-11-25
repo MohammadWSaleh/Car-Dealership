@@ -47,3 +47,12 @@ describe('API client', () => {
     const body = f.mock.calls[0][1].body; expect(body instanceof FormData).toBe(true); expect(body.get('keys')).toBe('2'); expect(body.has('notes')).toBe(false); expect(body.get('file').name).toBe('a.pdf');
   });
 });
+
+describe('F1 monthlyPayment', () => {
+  it('matches the backend level-payment formula and handles 0% interest', async () => {
+    const { monthlyPayment } = await import('../../utils.js');
+    const i = 0.08 / 12; const expected = (16000 * i) / (1 - Math.pow(1 + i, -60));
+    expect(monthlyPayment(20000, 20, 60, 8)).toBeCloseTo(expected, 6);
+    expect(monthlyPayment(12000, 0, 48, 0)).toBe(250);
+  });
+});

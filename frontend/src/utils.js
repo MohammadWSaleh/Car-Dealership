@@ -27,3 +27,9 @@ export const errMsg = (e) => {
   if (e && e.status === 0) return i18n.t('err.network');
   return (e && e.message) || i18n.t('err.generic');
 };
+
+// F1: same level-payment formula as the backend (backend/src/services/calc.js)
+export function monthlyPayment(price, downPercent, term, ratePercent) {
+  const financed = price * (1 - downPercent / 100); const i = ratePercent / 100 / 12;
+  return i === 0 ? financed / term : (financed * i) / (1 - Math.pow(1 + i, -term));
+}
