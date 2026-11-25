@@ -49,6 +49,15 @@ describe('Catalogue (FR-CAT)', () => {
     expect((await t.pub.get(`/catalogue/installment?trim_id=${t.trimId('Nissan', 'Sunny')}&down_payment=99999&term_months=48`)).status).toBe(400);
     expect((await t.pub.get(`/catalogue/installment?trim_id=${t.trimId('Nissan', 'Sunny')}&down_payment=0&term_months=3`)).status).toBe(400);
   });
+  it('F1 finder config comes from staff-set settings and the sales manager can change it', async () => {
+    const r = await t.pub.get('/catalogue/finder-config');
+    expect(r.status).toBe(200); expect(r.body).toEqual({ rate_percent: 8, term_months: 60, down_percent: 20 });
+    const put = await S.mgr.put('/settings/commercial', { finder_term_months: 48, finder_down_percent: 30 });
+    expect(put.status).toBe(200);
+    expect((await t.pub.get('/catalogue/finder-config')).body).toMatchObject({ term_months: 48, down_percent: 30 });
+    expect((await S.mgr.put('/settings/commercial', { finder_term_months: 3 })).status).toBe(400);
+    await S.mgr.put('/settings/commercial', { finder_term_months: 60, finder_down_percent: 20 });
+  });
   it('FR-CAT-07 yearly running cost uses editable fuel and electricity prices', async () => {
     const ev = t.trimId('BYD', 'Atto 3'); const pet = t.ctx.db.prepare("SELECT id FROM trims WHERE model = 'Corolla' AND fuel_type = 'petrol'").get().id;
     const r = await t.pub.get(`/catalogue/running-cost?trim_id=${ev}&petrol_trim_id=${pet}&km_per_year=15000`);

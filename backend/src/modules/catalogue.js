@@ -82,6 +82,10 @@ module.exports = function catalogue(ctx) {
     const term = parseInt(req.query.term_months, 10);
     res.json(calc.installment({ price, down, term, ratePercent: settings.num('default_interest') }));
   });
+  // F1 budget-first finder: the terms behind the monthly-budget slider (staff-set, never by the visitor)
+  r.get('/catalogue/finder-config', (req, res) => {
+    res.json({ rate_percent: settings.num('default_interest'), term_months: settings.num('finder_term_months'), down_percent: settings.num('finder_down_percent') });
+  });
   // FR-CAT-07: yearly running cost, hybrid / electric vs a chosen petrol trim
   r.get('/catalogue/running-cost', (req, res) => {
     const a = core.getTrim(req.query.trim_id); const b = core.getTrim(req.query.petrol_trim_id);
