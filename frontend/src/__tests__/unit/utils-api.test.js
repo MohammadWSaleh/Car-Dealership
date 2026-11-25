@@ -56,3 +56,9 @@ describe('F1 monthlyPayment', () => {
     expect(monthlyPayment(12000, 0, 48, 0)).toBe(250);
   });
 });
+
+import { safeNext } from '../../utils.js';
+describe('safeNext (open-redirect guard)', () => {
+  it('keeps same-site paths', () => { expect(safeNext('/account?tab=1')).toBe('/account?tab=1'); });
+  it.each(['//evil.com', 'https://evil.com', '/\\evil.com', 'javascript:alert(1)', '', null, undefined, 42, ['/x']])('rejects %s', (v) => { expect(safeNext(v)).toBe('/home'); });
+});

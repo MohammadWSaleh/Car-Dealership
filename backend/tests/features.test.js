@@ -70,7 +70,9 @@ describe('F4 trade-in estimate', () => {
     expect((await S.c1.get('/tradein')).body.find((x) => x.id === r.body.id).status).toBe('expired');
   });
   it('an estimate nobody asked a consultant about cannot get an offer', async () => {
-    const e = (await t.pub.post('/tradein/estimate', body)).body;
+    const anon = (await t.pub.post('/tradein/estimate', body)).body;
+    expect(anon.id).toBeNull(); // quick anonymous estimates are never stored
+    const e = (await S.cust.post('/tradein/estimate', body)).body;
     expect((await S.c1.post(`/tradein/${e.id}/offer`, { offer_usd: 5000 })).status).toBe(400);
   });
 });

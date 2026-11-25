@@ -77,6 +77,7 @@ module.exports = function deals(ctx) {
     if (u && u.role === 'customer') { name = u.name; email = u.email; phone = u.phone; lang = u.language; customerId = u.id; }
     else {
       required(b, ['name']);
+      for (const k of ['name', 'email', 'phone', 'language', 'color', 'message', 'notes', 'referral_code']) if (b[k] != null && typeof b[k] !== 'string') throw bad('invalid_input', `${k} must be text`);
       if (!b.email && !b.phone) throw bad('contact_required', 'An email address or phone number is required');
       if (b.email && !isEmail(b.email)) throw bad('invalid_email', 'Invalid email address');
       if (b.consent_data !== true) throw bad('consent_required', 'Consent to data processing is required');
@@ -116,7 +117,7 @@ module.exports = function deals(ctx) {
     let idx = order.indexOf(d.stage);
     if (d.stage === 'paid' && prepared) idx = order.indexOf('ready');
     const lost = d.stage === 'lost';
-    const steps = order.map((k, i) => ({ key: k, done: !lost && i < idx || (!lost && d.stage === 'delivered'), current: !lost && i === idx && d.stage !== 'delivered', at: at[k === 'ready' ? 'paid' : k] || (k === 'lead' ? d.created_at : null) }));
+    const steps = order.map((k, i) => ({ key: k, done: !lost && i < idx || (!lost && d.stage === 'delivered'), current: !lost && i === idx && d.stage !== 'delivered', at: (k === 'ready' ? null : at[k]) || (k === 'lead' ? d.created_at : null) }));
     const eta = d.stage === 'delivered' || lost ? null : calc.deliveryEta({ now: clock.now(), bookingSlot: bk && bk.slot_start, carStatus: car && car.status, arrivalDate: car && car.arrival_date,
       stockDays: settings.num('eta_stock_days'), orderDays: settings.num('eta_order_days') });
     res.json({ deal_id: d.id, stage: d.stage, lost, car: d.trim_id ? core.trimLabel(core.getTrim(d.trim_id)) : null, steps, eta,
@@ -126,6 +127,7 @@ module.exports = function deals(ctx) {
   r.put('/deals/:id', STAFF_DEALS, (req, res) => {
     const d = dealFor(req, req.params.id, 'edit'); const b = req.body || {};
     if (!['lead', 'quoted'].includes(d.stage)) throw conflict('deal_locked', 'This deal can no longer be edited');
+    for (const k of ['contact_name', 'contact_phone', 'contact_email', 'color', 'notes']) if (b[k] != null && typeof b[k] !== 'string') throw bad('invalid_input', `${k} must be text`);
     if (b.trim_id && !core.getTrim(b.trim_id)) throw notFound('Trim');
     db.prepare('UPDATE deals SET contact_name=?, contact_phone=?, contact_email=?, trim_id=?, color=?, notes=?, updated_at=? WHERE id=?')
       .run(b.contact_name ?? d.contact_name, b.contact_phone ?? d.contact_phone, b.contact_email ?? d.contact_email, b.trim_id ?? d.trim_id, b.color ?? d.color, b.notes ?? d.notes, clock.iso(), d.id);
@@ -140,7 +142,8 @@ module.exports = function deals(ctx) {
   });
   r.post('/deals/:id/lost', STAFF_DEALS, (req, res) => {
     const d = dealFor(req, req.params.id, 'edit');
-    core.moveStage(d.id, 'lost', req.user.id, (req.body || {}).reason);
+    const reason = (req.body || {}).reason; if (reason != null && typeof reason !== 'string') throw bad('invalid_input', 'reason must be text');
+    core.moveStage(d.id, 'lost', req.user.id, reason);
     res.json(dealView(core.getDeal(d.id), req.user));
   });
   r.post('/deals/:id/referral', auth.requireRole('customer', 'sales_consultant', 'sales_manager'), (req, res) => {

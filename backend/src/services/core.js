@@ -210,13 +210,13 @@ module.exports = function core(ctx) {
         if (deal.car_id) db.prepare("UPDATE cars SET status = 'delivered' WHERE id = ?").run(deal.car_id);
       }
     })();
-    if (STAGE_TEXT[to] && to !== 'delivered') { // F6: one message per stage, with the estimated delivery date
+    if (STAGE_TEXT[to] && to !== 'delivered') try { // F6 (a failed message must never undo or break the stage change): one message per stage, with the estimated delivery date
       const d2 = getDeal(dealId); const car = d2.car_id ? db.prepare('SELECT status, arrival_date FROM cars WHERE id = ?').get(d2.car_id) : null;
       const bk = db.prepare("SELECT slot_start FROM delivery_bookings WHERE deal_id = ? AND status = 'booked'").get(dealId);
       const eta = calc.deliveryEta({ now: clock.now(), bookingSlot: bk && bk.slot_start, carStatus: car && car.status, arrivalDate: car && car.arrival_date,
         stockDays: settings.num('eta_stock_days'), orderDays: settings.num('eta_order_days') });
       notify.send({ ...dealRecipient(d2), template: 'order_stage', params: { car: dealCarName(d2), stage: STAGE_TEXT[to].en, stage_ar: STAGE_TEXT[to].ar, eta: dmy(eta.date) } });
-    }
+    } catch (e) { /* the customer can still follow the order in the tracker */ }
     if (to === 'delivered') {
       const customerId = ensureCustomerAccount(getDeal(dealId));
       const m = createMembership(customerId); // FR-OC-01 / FR-DEL-05

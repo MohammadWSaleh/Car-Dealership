@@ -36,6 +36,9 @@ module.exports = function tradein(ctx) {
         if (b.consent_data !== true) throw bad('consent_required', 'Consent to data processing is required');
       }
     }
+    if (b.trim_id != null && b.trim_id !== '' && !core.getTrim(b.trim_id)) throw notFound('Trim');
+    if (!u && !wantsContact) return res.status(201).json({ id: null, segment: b.segment, brand: b.brand || null, model: b.model || null, year, mileage_km: km, condition: b.condition,
+      est_low: est.low, est_high: est.high, status: 'estimated', offer_usd: null, offer_valid_until: null }); // anonymous quick estimates are not stored
     const info = db.prepare(`INSERT INTO trade_ins(customer_id,segment,brand,model,year,mileage_km,condition,est_low,est_high,name,phone,email,language,status,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
       .run(u ? u.id : null, b.segment, b.brand || null, b.model || null, year, km, b.condition, est.low, est.high, wantsContact ? name : null, wantsContact ? phone : null, wantsContact ? email : null, lang, wantsContact ? 'requested' : 'estimated', clock.iso());
     const id = info.lastInsertRowid;

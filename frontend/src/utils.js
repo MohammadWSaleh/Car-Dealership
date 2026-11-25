@@ -33,3 +33,9 @@ export function monthlyPayment(price, downPercent, term, ratePercent) {
   const financed = price * (1 - downPercent / 100); const i = ratePercent / 100 / 12;
   return i === 0 ? financed / term : (financed * i) / (1 - Math.pow(1 + i, -term));
 }
+
+// Only same-site paths are allowed as a post-login destination: "//host", "/\\host" and absolute URLs would send the visitor to another site.
+export function safeNext(v, fallback = '/home') {
+  const s = typeof v === 'string' ? v : '';
+  return /^\/(?![/\\])[^\s\\]*$/.test(s) ? s : fallback;
+}

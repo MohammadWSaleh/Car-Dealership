@@ -10,7 +10,7 @@ Test session date: 22/11/2026. Three levels were run on the complete system. All
 | **Component** | Each backend module through its API with the real database (accounts, catalogue, test drives, assistant, EV, deals, payments, inventory, delivery, Owners Circle, admin, reports, platform); each React component/page with mocked API | Vitest, supertest, Testing Library | 96 backend + 34 frontend | **all pass** |
 | **System** | The whole product running as a separate server process with its own SQLite file: (a) the 111 module tests re-run over real HTTP against that process; (b) 76 black-box checks: real browser journeys, TLS, security, load, backup/restore, responsive layout, other browser engines | Vitest over HTTP; Playwright (Chromium, Firefox, WebKit) | 96 + 68 | **all pass** |
 
-Totals: 178 backend tests + 69 frontend tests + 111 over-HTTP re-runs + 76 system checks. Translation check: 589 keys used, 821 English = 821 Arabic.
+Totals: 185 backend tests + 79 frontend tests + 111 over-HTTP re-runs + 76 system checks. Translation check: 589 keys used, 821 English = 821 Arabic.
 
 **Coverage of the SRS: all 85 requirements (70 functional, 15 non-functional) are exercised by at least one automated test; see section 3.** Four non-functional requirements also need a human measurement (section 5).
 
@@ -159,6 +159,22 @@ Columns: **Unit** = number of unit tests naming the requirement; **Component** =
 | F4 Trade-in estimate and confirmed offer | backend (formula ordering, validation, lead creation, offer validity and expiry, notification, offer only after a request); system SYS-UI-FEAT-04 and 08 |
 | F5 QR test-drive pass and staff check-in | backend (check-in once, today only, active bookings only, role); component tests (QR image, check-in messages); system SYS-UI-FEAT-05 and 06 |
 | F6 Smart order tracker (estimate, steps, readiness, one notification per stage) | backend (steps, privacy, notification, estimate rules); component tests; system SYS-UI-FEAT-07 |
+
+### Batch 5 (deep debugging session: static analysis, code review, unit, component, system and scenario testing)
+Method: ESLint static pass; manual review of security-sensitive code; a route sweep (`backend/tests/robustness.test.js`) that enumerates every real Express route and sends 32,488 hostile requests (wrong types, objects, arrays, booleans, huge values, every role) asserting no 5xx and no leaked SQL/stack text; scenario tests (`backend/tests/debug-session.test.js`) for IDOR between customers, forged tokens and bad types.
+
+| # | Defect found | Fix | Regression test |
+|---|---|---|---|
+| D1 | Open redirect: `/login?next=//evil.com` | `safeNext()` only accepts same-site paths | utils-api unit (9 cases) |
+| D2 | Anonymous trade-in quick estimates stored without limit | Stored only when a contact is requested or user is signed in | features + debug-session |
+| D3 | Unknown `trim_id` in trade-in created a deal then failed with 500 | Validated first, 404 | debug-session |
+| D4 | A failed notification could block a deal stage change | Notification errors are contained | covered by stage tests |
+| D5 | Tracker showed a made-up "ready" date | Only real dates shown | features |
+| D6 | Finder slider flickered before config loaded | Budget is 0 until config arrives | component |
+| D7 | 24 HTTP 500s on object/array/boolean field values (promotions, accessories, leads, deal edit, mark lost, payments, password reset) | Central mapping of driver type errors to 400 `invalid_input`, plus explicit text checks | robustness sweep (now 0 server errors) + debug-session |
+| D8 | Download file names could contain unsafe characters | Stricter sanitising | system suite |
+
+Result after fixes: 185/185 backend, 79/79 frontend, 111/111 over HTTP, 76/76 system, i18n 821 = 821.
 
 ## 4. System checks (76)
 
