@@ -38,4 +38,10 @@ describe('Debugging session regressions', () => {
       }
     }
   });
+  it('general manager has read-only access to delivery', async () => {
+    const d = await deal(t, S, { upTo: 'contract_signed' });
+    expect((await S.gm.get('/delivery/deals')).status).toBe(200);
+    expect((await S.gm.get(`/delivery/deals/${d.id}`)).status).toBe(200);
+    expect((await S.gm.put(`/delivery/deals/${d.id}/inspection/exterior`, { passed: true })).status).toBe(403);
+  });
 });

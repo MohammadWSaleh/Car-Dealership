@@ -8,7 +8,7 @@ module.exports = function delivery(ctx) {
   const { db, auth, audit, notify, settings, core, docs } = ctx;
   const r = express.Router();
   const COORD = auth.requireRole('delivery_coordinator');
-  const VIEW = auth.requireRole('delivery_coordinator', 'sales_manager', 'sales_consultant');
+  const VIEW = auth.requireRole('delivery_coordinator', 'sales_manager', 'sales_consultant', 'general_manager');
   const labels = Object.fromEntries(core.INSPECTION_ITEMS);
 
   const inspection = (dealId) => db.prepare('SELECT item_key, passed, notes, checked_at FROM inspection_items WHERE deal_id = ? ORDER BY id').all(dealId).map((i) => ({ ...i, label: labels[i.item_key] || i.item_key, passed: !!i.passed }));

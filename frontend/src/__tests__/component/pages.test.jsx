@@ -62,6 +62,13 @@ describe('FR-ADM-01 staff console access', () => {
     const items = menu(role); has.forEach((h) => expect(items, `${role} should see ${h}`).toContain(h)); hasNot.forEach((h) => expect(items, `${role} must not see ${h}`).not.toContain(h));
   });
 });
+describe('direct links to pages a role cannot use', () => {
+  it('shows a no-access screen and makes no data requests', () => {
+    auth.user = { role: 'sales_consultant', name: 'C' }; mount(<Console />, '/staff/users');
+    expect(screen.getByRole('alert').textContent).toMatch(/does not have access/); expect(get).not.toHaveBeenCalledWith(expect.stringContaining('/admin/users'));
+  });
+  it('still opens pages the role may use', () => { auth.user = { role: 'sales_manager', name: 'M' }; mount(<Console />, '/staff/deals'); expect(screen.queryByRole('alert')).toBeNull(); });
+});
 describe('FR-VA assistant widget', () => {
   it('opens, greets, and sends the customer message with the current language', async () => {
     post.mockResolvedValue({ session_id: 's1', reply: 'Hello! How can I help?', options: [] }); mount(<ChatWidget />);

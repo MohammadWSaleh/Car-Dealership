@@ -10,7 +10,7 @@ Test session date: 22/11/2026. Three levels were run on the complete system. All
 | **Component** | Each backend module through its API with the real database (accounts, catalogue, test drives, assistant, EV, deals, payments, inventory, delivery, Owners Circle, admin, reports, platform); each React component/page with mocked API | Vitest, supertest, Testing Library | 96 backend + 34 frontend | **all pass** |
 | **System** | The whole product running as a separate server process with its own SQLite file: (a) the 111 module tests re-run over real HTTP against that process; (b) 76 black-box checks: real browser journeys, TLS, security, load, backup/restore, responsive layout, other browser engines | Vitest over HTTP; Playwright (Chromium, Firefox, WebKit) | 96 + 68 | **all pass** |
 
-Totals: 185 backend tests + 79 frontend tests + 111 over-HTTP re-runs + 76 system checks. Translation check: 589 keys used, 821 English = 821 Arabic.
+Totals: 186 backend tests + 81 frontend tests + 111 over-HTTP re-runs + 76 system checks. Translation check: 589 keys used, 821 English = 821 Arabic.
 
 **Coverage of the SRS: all 85 requirements (70 functional, 15 non-functional) are exercised by at least one automated test; see section 3.** Four non-functional requirements also need a human measurement (section 5).
 
@@ -176,6 +176,25 @@ Method: ESLint static pass; manual review of security-sensitive code; a route sw
 
 Result after fixes: 185/185 backend, 79/79 frontend, 111/111 over HTTP, 76/76 system, i18n 821 = 821.
 
+### Batch 6 (live walkthrough: every button, every role, one connected business journey)
+Method: the real server was started with demo data and driven in a real browser. `system-tests/crawl_all_buttons.py` logs in as each of the 10 accounts (public visitor, 3 customers, 6 staff roles, administrator) and clicks every visible button, link, tab, checkbox and drop-down on every page (about 3,000 clicks), recording uncaught JavaScript errors, console errors, failed API calls, raw translation keys, error screens and buttons that do nothing. `system-tests/journey_scenario.py` then runs one customer from registration to delivered car and checks each screen and each module against the others (39 checks).
+
+| # | Finding | Fix | Regression test |
+|---|---|---|---|
+| E1 | A staff member who opened a page their role may not use (for example a consultant on `/staff/users`) got a page full of failing requests | A clear "no access" screen; no data requests are made | component test (2 cases) |
+| E2 | General Manager saw the Delivery menu but the server answered 403 on every page | General Manager now has read-only access to delivery; changes stay with the delivery coordinator | debug-session test |
+| E3 | Two F5 tests only passed when run before midnight (staff sessions expired when the test clock moved) | Sessions are re-created at the moved clock | features test |
+
+Reviewed and accepted: buttons that "do nothing" were all legitimate (navigation to the page already open, a view toggle already selected, a form blocked by required fields). Expected 4xx replies (a manager approving a price exception without a reason, a deal without an invoice yet) are handled with a message on screen.
+
+Journey result (39/39): registration, budget finder, enquiry, test-drive booking linked to the same deal, quotation, deposit, contract PDF, signed copy, full payment, receipt and invoice PDFs, delivery inspection and registration, customer delivery slot, handover, delivered stage. Cross-checks: the customer's tracker and account follow each step, notifications reach the outbox (booking, quotation, contract, receipts, stage changes, delivery, Owners Circle welcome), the audit log records the actions, reports and the CSV export include the sale, and the General Manager can view but not change delivery. No JavaScript error and no HTTP 5xx occurred.
+
+Result after fixes: 186/186 backend, 81/81 frontend, over-HTTP all passed, 76/76 system, i18n 823 = 823.
+
+### Batch 7 (visual redesign of the light screens and tables)
+Changes: dark grouped staff sidebar with icons and user card; refreshed buttons, inputs (custom drop-down arrow, soft focus ring), badges (status dot), toasts and dialogs; tables in a rounded panel with sentence-case sticky headers, row hover, result count and clearer empty state; dashboard tiles coloured by stage; customer order card as a hero with progress bar; segmented account tabs. Arabic (right-to-left) and phone layouts were checked with screenshots.
+Re-tested after the redesign: 186/186 backend, 81/81 frontend, 76/76 system (including the accessibility scan, which caught one low-contrast badge colour on the dark car pages; fixed), 39/39 journey, and a repeat button crawl of manager, administrator and customer (about 1,100 clicks, no new errors).
+
 ## 4. System checks (76)
 
 | ID | Check | Result |
@@ -260,5 +279,7 @@ cd backend  && npm test                  # unit + component (163)
 cd backend  && npm run test:system       # same module tests over HTTP against a live server per file (96)
 cd frontend && npm test                  # frontend unit + component (53)
 cd frontend && node scripts/check-i18n.mjs && npm run build
+python3 system-tests/crawl_all_buttons.py BASE EMAIL LABEL PATHS   # click-everything crawler (see batch 6)
+python3 system-tests/journey_scenario.py   # connected business journey against a running server (BASE env var)
 python3 system-tests/system_suite.py     # 68 black-box checks (needs: pip install playwright; playwright install chromium firefox webkit)
 ```
