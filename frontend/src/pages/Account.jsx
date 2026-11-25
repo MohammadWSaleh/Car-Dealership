@@ -23,17 +23,17 @@ export function NextStepCard({ o }) {
   else if (order.stage === 'contract_signed' && !tl.data?.delivery_slot) next = 'next_slot';
   else if (order.stage === 'contract_signed') next = 'next_pay';
   else if (order.stage === 'paid') next = tl.data?.delivery_slot ? 'next_collect' : 'next_slot';
-  return <section className="card border-brand-200 bg-brand-50" aria-labelledby="next-step-h">
+  return <section className="hero-order relative overflow-hidden rounded-2xl p-5 shadow-pop sm:p-6" aria-labelledby="next-step-h">
     <div className="flex flex-wrap items-start justify-between gap-3">
-      <div><p className="text-xs font-semibold uppercase tracking-wide text-brand-700">{t('acc.your_order')}</p>
-        <h2 id="next-step-h" className="text-lg font-bold">{order.car}</h2>
-        <p className="mt-1 text-sm"><b>{t('acc.next_step')}:</b> {t(`acc.${next}`)}</p></div>
-      <div className="flex gap-2"><Link className="btn-primary btn-sm" to={`/account/orders/${order.id}`}>{t('acc.open')}</Link>
-        <button className="btn-secondary btn-sm" onClick={() => window.dispatchEvent(new Event('fsm:open-chat'))}>{t('acc.contact_us')}</button></div>
+      <div><p className="text-sm font-medium text-sky-200">{t('acc.your_order')}</p>
+        <h2 id="next-step-h" className="text-2xl font-bold tracking-tight">{order.car}</h2>
+        <p className="mt-2 rounded-lg bg-white/10 px-3 py-2 text-sm text-white ring-1 ring-white/15"><b className="text-sky-200">{t('acc.next_step')}:</b> {t(`acc.${next}`)}</p></div>
+      <div className="flex gap-2"><Link className="btn bg-white text-brand-900 btn-sm shadow-sm hover:bg-sky-50" to={`/account/orders/${order.id}`}>{t('acc.open')}</Link>
+        <button className="btn btn-sm bg-white/10 text-white ring-1 ring-white/25 hover:bg-white/20" onClick={() => window.dispatchEvent(new Event('fsm:open-chat'))}>{t('acc.contact_us')}</button></div>
     </div>
     {steps.length > 0 && <div className="mt-3" role="progressbar" aria-valuemin={0} aria-valuemax={steps.length} aria-valuenow={doneCount} aria-label={t('acc.progress')}>
-      <div className="h-2 overflow-hidden rounded-full bg-white ring-1 ring-brand-200"><div className="h-full bg-brand-600" style={{ width: `${(doneCount / steps.length) * 100}%` }} /></div>
-      <p className="mt-1 text-xs text-slate-600">{doneCount} / {steps.length}</p></div>}
+      <div className="h-2 overflow-hidden rounded-full bg-white/15"><div className="tracker-bar h-full rounded-full bg-sky-400" style={{ width: `${(doneCount / steps.length) * 100}%` }} /></div>
+      <p className="mt-1 text-xs text-sky-100/80 tabular-nums">{doneCount} / {steps.length}</p></div>}
   </section>;
 }
 
@@ -133,8 +133,8 @@ function Privacy() {
 export default function Account() {
   const { t } = useTranslation(); const { user, loading } = useAuth();
   if (loading) return null; if (!user) return <Navigate to="/login?next=/account" replace />; if (user.role !== 'customer') return <Navigate to="/staff" replace />;
-  const tab = ({ isActive }) => `whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium ${isActive ? 'bg-brand-600 text-white' : 'bg-white ring-1 ring-slate-200 hover:bg-slate-50'}`;
+  const tab = ({ isActive }) => `whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition ${isActive ? 'bg-white text-brand-700 shadow-sm ring-1 ring-slate-200' : 'text-slate-600 hover:text-slate-900'}`;
   return <div className="space-y-5"><h1 className="text-2xl font-bold">{t('acc.hello', { name: user.name })}</h1>
-    <nav className="flex gap-2 overflow-x-auto pb-1" aria-label="Account"><NavLink end to="/account" className={tab}>{t('acc.overview')}</NavLink><NavLink to="/account/owners-circle" className={tab}>{t('oc.title')}</NavLink><NavLink to="/account/profile" className={tab}>{t('acc.profile')}</NavLink><NavLink to="/account/privacy" className={tab}>{t('privacy.title')}</NavLink></nav>
+    <nav className="inline-flex max-w-full gap-1 overflow-x-auto rounded-xl bg-slate-200/60 p-1" aria-label="Account"><NavLink end to="/account" className={tab}>{t('acc.overview')}</NavLink><NavLink to="/account/owners-circle" className={tab}>{t('oc.title')}</NavLink><NavLink to="/account/profile" className={tab}>{t('acc.profile')}</NavLink><NavLink to="/account/privacy" className={tab}>{t('privacy.title')}</NavLink></nav>
     <Routes><Route index element={<Overview />} /><Route path="orders/:id" element={<Order />} /><Route path="owners-circle" element={<OwnersCircle />} /><Route path="profile" element={<Profile />} /><Route path="privacy" element={<Privacy />} /></Routes></div>;
 }

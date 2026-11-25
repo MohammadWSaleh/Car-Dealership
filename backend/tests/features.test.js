@@ -81,14 +81,15 @@ describe('F5 QR test-drive check-in', () => {
   const guest = { name: 'QR Guest', email: 'qr@example.com', phone: '+96170000009', consent_data: true };
   function todaySlot() { const d = new Date(); if (d.getDay() === 0) d.setDate(d.getDate() + 1); return { day: ymd(d), slot: `${ymd(d)} 17:00` }; }
   it('staff check a customer in by code, once, only on the day, only for active bookings', async () => {
-    const { day, slot } = todaySlot(); t.clock.set(new Date(`${day}T08:00:00`));
+    const { day, slot } = todaySlot(); t.clock.set(new Date(`${day}T08:00:00`)); const S2 = await staff(t); // sessions are re-created at the moved clock so the test does not depend on the time of day
+    try {
     const td = (await t.pub.post('/testdrives', { trim_id: t.trimId('BYD', 'Seal'), slot_start: slot, contact: guest })).body;
     expect((await t.pub.post('/testdrives/check-in', { code: td.code })).status).toBe(401);
-    const a = await S.c1.post('/testdrives/check-in', { code: td.code.toLowerCase() });
+    const a = await S2.c1.post('/testdrives/check-in', { code: td.code.toLowerCase() });
     expect(a.status).toBe(200); expect(a.body.already_checked_in).toBe(false); expect(a.body.booking.checked_in_at).toBeTruthy();
-    expect((await S.c1.post('/testdrives/check-in', { code: td.code })).body.already_checked_in).toBe(true);
-    expect((await S.c1.post('/testdrives/check-in', { code: 'NOPE00' })).status).toBe(404);
-    t.clock.set(null);
+    expect((await S2.c1.post('/testdrives/check-in', { code: td.code })).body.already_checked_in).toBe(true);
+    expect((await S2.c1.post('/testdrives/check-in', { code: 'NOPE00' })).status).toBe(404);
+    } finally { t.clock.set(null); }
   });
   it('rejects a booking for another day and a cancelled booking', async () => {
     const d = new Date(); d.setDate(d.getDate() + 10); if (d.getDay() === 0) d.setDate(d.getDate() + 1);

@@ -80,6 +80,8 @@ export default {
     dashboard: 'Dashboard', deals: 'Deals', testdrives: 'Test drives', exceptions: 'Price exceptions', payments: 'Payments', invoices: 'Invoices', catalogue: 'Catalogue', inventory: 'Inventory', delivery: 'Delivery', owners: 'Owners Circle', reports: 'Reports', users: 'Users', settings: 'Settings', audit: 'Audit log', data_requests: 'Data requests', outbox: 'Notification outbox', backups: 'Backups',
     welcome: 'Welcome, {{name}}', appointments_today: 'Test drives today', none_today: 'Nothing scheduled today.', none: 'Nothing to show.', my_leads: 'Open leads and deals', stock_alerts: 'Stock alerts',
     low_stock: 'Low stock: {{car}} has {{count}} in stock (alert below {{threshold}}).', unsold: '{{car}} ({{vin}}) has been unsold for {{days}} days.',
+    grp_sales: 'Sales', grp_money: 'Money', grp_stock: 'Stock and delivery', grp_growth: 'Growth', grp_admin: 'Administration',
+    no_access: 'Your role does not have access to this page.', no_access_back: 'Back to the staff console',
     dash_gm: 'Review sales, stock and team performance under', dash_accountant: 'Record payments, refunds and invoices under', dash_delivery: 'Prepare cars and complete handovers under', dash_admin: 'Manage accounts, settings and the audit log under',
   },
   deal: { view: 'View', view_board: 'Board', view_list: 'List', board_empty: 'No deals', days_in_stage: '{{count}} d in stage', board_lost: '{{count}} lost deal(s) are hidden. Choose "Lost" in the stage filter of the list view to see them.',

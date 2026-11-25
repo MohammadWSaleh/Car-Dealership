@@ -22,7 +22,7 @@ function DealsDash() {
   const { t } = useTranslation(); const q = useQuery({ queryKey: ['dash'], queryFn: () => api.get('/dashboard/consultant') });
   return <Loading q={q}>{(d) => <>
     <Attention items={d.attention || []} />
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-5">{['lead', 'quoted', 'reserved', 'contract_signed', 'paid'].map((s) => <Stat key={s} label={t(`status.${s}`)} value={d.stage_counts[s] || 0} />)}</div>
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-5">{['lead', 'quoted', 'reserved', 'contract_signed', 'paid'].map((s) => <Stat key={s} label={t(`status.${s}`)} value={d.stage_counts[s] || 0} tone={{ lead: 'slate', quoted: 'blue', reserved: 'amber', contract_signed: 'violet', paid: 'green' }[s]} />)}</div>
     <section className="card"><h2 className="mb-2 font-bold">{t('staff.appointments_today')} ({dmy(d.date)})</h2>
       <Table rows={d.appointments_today} empty={t('staff.none_today')} cols={[{ label: t('td.time'), render: (r) => r.slot_start.slice(11, 16) }, { label: t('form.name'), render: (r) => r.name }, { label: t('form.phone'), render: (r) => r.phone }, { label: t('acc.car'), render: (r) => r.car }, { label: t('td.license'), render: (r) => (r.license_verified ? '✓' : '—') }]} /></section>
     <section className="card"><h2 className="mb-2 font-bold">{t('staff.my_leads')}</h2>

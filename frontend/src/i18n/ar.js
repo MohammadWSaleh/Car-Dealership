@@ -80,6 +80,8 @@ export default {
     dashboard: 'لوحة المعلومات', deals: 'الصفقات', testdrives: 'تجارب القيادة', exceptions: 'استثناءات الأسعار', payments: 'المدفوعات', invoices: 'الفواتير', catalogue: 'الكتالوج', inventory: 'المخزون', delivery: 'التسليم', owners: 'نادي المالكين', reports: 'التقارير', users: 'المستخدمون', settings: 'الإعدادات', audit: 'سجل التدقيق', data_requests: 'طلبات البيانات', outbox: 'صندوق الإشعارات', backups: 'النسخ الاحتياطية',
     welcome: 'مرحباً، {{name}}', appointments_today: 'تجارب القيادة اليوم', none_today: 'لا شيء مجدول اليوم.', none: 'لا يوجد ما يُعرض.', my_leads: 'العملاء والصفقات المفتوحة', stock_alerts: 'تنبيهات المخزون',
     low_stock: 'مخزون منخفض: {{car}} لديها {{count}} في المخزون (التنبيه تحت {{threshold}}).', unsold: '{{car}} ({{vin}}) غير مباعة منذ {{days}} يوماً.',
+    grp_sales: 'المبيعات', grp_money: 'المال', grp_stock: 'المخزون والتسليم', grp_growth: 'النمو', grp_admin: 'الإدارة',
+    no_access: 'ليس لدور حسابك صلاحية الوصول إلى هذه الصفحة.', no_access_back: 'العودة إلى لوحة الموظفين',
     dash_gm: 'راجع المبيعات والمخزون وأداء الفريق في', dash_accountant: 'سجّل المدفوعات والمبالغ المستردة والفواتير في', dash_delivery: 'جهّز السيارات وأتمّ التسليم من', dash_admin: 'أدر الحسابات والإعدادات وسجل التدقيق من',
   },
   deal: { view: 'العرض', view_board: 'لوحة', view_list: 'قائمة', board_empty: 'لا توجد صفقات', days_in_stage: '{{count}} يوم في هذه المرحلة', board_lost: '{{count}} صفقة خاسرة مخفية. اختر "خسارة" من فلتر المرحلة في عرض القائمة لرؤيتها.',
