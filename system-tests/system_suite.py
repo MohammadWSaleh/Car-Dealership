@@ -191,11 +191,11 @@ def browser(S, T):
         rec('SYS-UI-CAT-05', 'Compare page shows exactly three trims side by side and the 4th is blocked (TC-CAT-05)', pg.locator('table').count() >= 1 and pg.locator('thead th').count() >= 4 and fourth_disabled, (pg.locator('thead th').count(), fourth_disabled))
         # --- language switching
         pg.goto(B + '/home'); pg.wait_for_timeout(600)
-        pg.click('text=العربية'); pg.wait_for_timeout(500)
+        pg.click('header button[aria-haspopup=menu]:has-text("English")'); pg.click('[role=menuitem]:has-text("العربية")'); pg.wait_for_timeout(500)
         rtl = pg.evaluate('document.documentElement.dir'); lang = pg.evaluate('document.documentElement.lang')
         ar_txt = pg.inner_text('body'); has_ar = re.search(r'[؀-ۿ]{3,}', ar_txt) is not None
         rec('SYS-UI-LANG-01', 'Switching to Arabic flips the page to RTL immediately with Arabic text, no reload (TC-ACC-05, NFR-USA-01)', rtl == 'rtl' and has_ar, (rtl, lang))
-        pg.click('text=English'); pg.wait_for_timeout(400)
+        pg.click('header button[aria-haspopup=menu]:has-text("العربية")'); pg.click('[role=menuitem]:has-text("English")'); pg.wait_for_timeout(400)
         rec('SYS-UI-LANG-02', 'Switching back restores LTR English', pg.evaluate('document.documentElement.dir') == 'ltr', '')
         # --- chat assistant
         pg.goto(B + '/home'); pg.wait_for_timeout(500); pg.click('button.fixed'); pg.wait_for_timeout(800)
@@ -224,7 +224,7 @@ def browser(S, T):
         pg.locator('form input[type=text], form input:not([type])').first.fill('System Tester'); pg.fill('input[type=email]', em)
         pg.locator('input[type=tel]').first.fill('+96171123456') if pg.locator('input[type=tel]').count() else None
         pg.fill('input[type=password]', 'SysTest#2026'); pg.locator('input[type=checkbox]').first.check(); pg.click('form button.btn-primary'); pg.wait_for_timeout(1500)
-        rec('SYS-UI-ACC-01', 'A new customer can register with consent and lands logged in on the home page (TC-ACC-01/02)', pg.url.endswith('/home') and pg.locator('button:has-text("Sign out")').count() >= 1, pg.url)
+        rec('SYS-UI-ACC-01', 'A new customer can register with consent and lands logged in on the home page (TC-ACC-01/02)', pg.url.endswith('/home') and (pg.locator('header button[aria-haspopup=menu]').last.click() or pg.locator('[role=menuitem]:has-text("Sign out")').count() >= 1), pg.url)
         t0 = time.time()
         pg.goto(B + '/cars/1'); pg.wait_for_selector('text=Your test drive'); pg.wait_for_timeout(800)   # nearest free slot is already selected
         pg.locator('form input[type=checkbox]').first.check() if pg.locator('form input[type=checkbox]').count() else None

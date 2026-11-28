@@ -26,7 +26,7 @@ export default function Home() {
   const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   return (
     <div>
-      <section className="relative flex min-h-[100svh] items-center overflow-hidden bg-black"><Streaks />
+      <section className="relative flex min-h-[100svh] items-center overflow-hidden bg-black"><Streaks /><div className="hero-floor" aria-hidden="true" /><img src="/hero-car.webp" alt="" aria-hidden="true" className="hero-car" width="1270" height="585" fetchpriority="high" />
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-20">
           <h1 className="hero-in display mt-4 max-w-3xl text-5xl text-white sm:text-7xl" style={{ animationDelay: '250ms' }}>{t('brand.slogan')}</h1>
           <p className="hero-in mt-6 max-w-xl text-lg text-slate-300" style={{ animationDelay: '450ms' }}>{t('home.lead')}</p>
