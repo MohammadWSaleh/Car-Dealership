@@ -195,6 +195,10 @@ Result after fixes: 186/186 backend, 81/81 frontend, over-HTTP all passed, 76/76
 Changes: dark grouped staff sidebar with icons and user card; refreshed buttons, inputs (custom drop-down arrow, soft focus ring), badges (status dot), toasts and dialogs; tables in a rounded panel with sentence-case sticky headers, row hover, result count and clearer empty state; dashboard tiles coloured by stage; customer order card as a hero with progress bar; segmented account tabs. Arabic (right-to-left) and phone layouts were checked with screenshots.
 Re-tested after the redesign: 186/186 backend, 81/81 frontend, 76/76 system (including the accessibility scan, which caught one low-contrast badge colour on the dark car pages; fixed), 39/39 journey, and a repeat button crawl of manager, administrator and customer (about 1,100 clicks, no new errors).
 
+### Batch 8 (one consistent design across every page)
+All 34 screens (public, sign-in, customer account, every staff page) were screenshotted before and after. Fixed: one dark header and footer on every page (the light pages used to switch to a white header), one segmented tab control (catalogue admin, inventory, deals view, account), one page-title style (the trade-in page used italic capitals), one button shape, dropdown arrows that repeated in the dark theme, header wrapping in Arabic (the full menu now starts at laptop width, a menu button below it), and an unhandled error when the browser refused the "Copy" button for the referral link (the link is now selected for manual copy instead).
+Re-tested: 81/81 frontend, 76/76 system (accessibility scan included), repeat button crawl of the public site, the owner account and the manager (about 750 clicks, no errors).
+
 ## 4. System checks (76)
 
 | ID | Check | Result |
@@ -283,3 +287,16 @@ python3 system-tests/crawl_all_buttons.py BASE EMAIL LABEL PATHS   # click-every
 python3 system-tests/journey_scenario.py   # connected business journey against a running server (BASE env var)
 python3 system-tests/system_suite.py     # 68 black-box checks (needs: pip install playwright; playwright install chromium firefox webkit)
 ```
+
+## Batch 9 — Full dark-theme consistency
+- Staff console and account pages now use the same dark theme and background as the public pages (Layout wrapper always `theme-dark`).
+- Reports charts restyled for dark (axis ticks, grid, tooltip, pie labels, brighter series colours); disabled primary buttons readable on dark.
+- Verified: frontend 81/81, i18n 828/828, system suite 76/76 (axe on 9 pages), 34 pages screenshotted in EN/AR.
+
+## Batch 10 — Design pass (photos, staff dashboard, settings tabs)
+- Real vehicle photos (Wikimedia Commons, credits in docs/IMAGE-CREDITS.md) on cards, compare and detail pages, with alt text and an illustration fallback if a photo fails to load.
+- Staff console back to a light surface with the dark rail; account and storefront stay dark.
+- Administrator dashboard (KPIs, recent activity, quick links); settings split into 5 tabs; audit rows get category badges and a compact summary with raw JSON on demand.
+- Defects fixed: Outbox "To" column read a non-existent field (always "-"); Backups list showed no date or size (API now returns name, created_at, size).
+- Compare page: structured table (photo, price, monthly estimate, fuel, body, availability, specs) and a proper empty state.
+- Result: backend 186, frontend 81, i18n 852/852, system suite 76 (SYS-UI-UX-05 updated for default photos).

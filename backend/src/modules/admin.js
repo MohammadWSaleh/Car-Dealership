@@ -118,7 +118,13 @@ module.exports = function admin(ctx) {
   });
 
   // ----- backups and scheduled jobs (NFR-REL-01) -----
-  r.get('/admin/backups', ADM, (req, res) => res.json(backupSvc.list(config)));
+  r.get('/admin/backups', ADM, (req, res) => res.json(backupSvc.list(config).map((name) => {
+    // fsm-YYYYMMDD-HHMMSS... -> ISO timestamp; size = total bytes of the backup folder
+    const m = /^fsm-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/.exec(name); const dir = require('path').join(config.backupDir, name); let size = 0;
+    const walk = (d) => { for (const e of require('fs').readdirSync(d, { withFileTypes: true })) { const f = require('path').join(d, e.name); if (e.isDirectory()) walk(f); else size += require('fs').statSync(f).size; } };
+    try { walk(dir); } catch { size = null; }
+    return { name, created_at: m ? `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}Z` : null, size };
+  })));
   r.post('/admin/backups', ADM, async (req, res) => { const name = await backupSvc.backup(db, config); audit(req.user.id, 'backup', 'system', name); res.status(201).json({ name }); });
   r.post('/admin/run-jobs', ADM, (req, res) => res.json(ctx.runJobs()));
   return r;

@@ -16,11 +16,11 @@ export function Availability({ a }) {
 export function TrimCard({ trim, monthly, dim }) {
   const { t } = useTranslation(); const cmp = useCompare(); const on = cmp.ids.includes(trim.id);
   return (
-    <div className={`card flex flex-col p-0 transition-opacity sm:p-0 ${dim ? 'opacity-70' : ''}`}>
-      <Link to={`/cars/${trim.id}`}><CarImage trim={trim} className="aspect-[2/1] w-full rounded-t-xl" /></Link>
+    <div className={`card card-hover group flex flex-col overflow-hidden p-0 transition-opacity sm:p-0 ${dim ? 'opacity-70' : ''}`}>
+      <Link to={`/cars/${trim.id}`} className="relative block overflow-hidden bg-slate-800" aria-label={`${trim.brand} ${trim.model}`}><CarImage trim={trim} className="aspect-[16/10] w-full transition duration-500 group-hover:scale-[1.04]" />{trim.promotion && <span className="absolute start-3 top-3"><Badge tone="red">{t('catalogue.offer')}</Badge></span>}</Link>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div><Link to={`/cars/${trim.id}`} className="font-bold hover:text-brand-700">{trim.brand} {trim.model}</Link><div className="text-sm text-slate-500">{trim.name} · {t(`fuel.${trim.fuel_type}`)}</div></div>
-        <div className="flex flex-wrap items-center gap-2"><Price usd={trim.price_usd} lbp={trim.price_lbp} />{trim.promotion && <Badge tone="red">{t('catalogue.offer')}</Badge>}</div>
+        <div className="flex flex-wrap items-center gap-2"><Price usd={trim.price_usd} lbp={trim.price_lbp} /></div>
         {monthly != null && <div className="text-sm font-semibold text-brand-700">{t('catalogue.per_month', { amount: usd(monthly) })}</div>}
         <div className="text-[11px] font-semibold text-emerald-700">✓ {t('catalogue.fixed_note')}</div>
         <Availability a={trim.availability} />
@@ -55,14 +55,14 @@ export default function Catalogue() {
         <button className="btn-secondary btn-sm w-full" onClick={() => setSp({}, { replace: true })}>{t('common.reset')}</button>
       </aside>
       <section>
-        <div className="card mb-4 border-brand-200 bg-gradient-to-r from-brand-50 to-white">
+        <div className="card mb-4 border-s-4 border-s-brand-600">
           <div className="flex flex-wrap items-baseline justify-between gap-2"><h2 className="font-bold">{t('catalogue.finder_title')}</h2><span className="text-2xl font-extrabold text-brand-700">{budget ? `${usd(budget)}/mo` : t('catalogue.finder_any')}</span></div>
           <input type="range" className="mt-2 w-full accent-brand-600" min="100" max={MAXM} step="50" value={budget || MAXM} onChange={(e) => setVal('monthly', Number(e.target.value) >= MAXM ? '' : e.target.value)} aria-label={t('catalogue.finder_title')} />
           <div className="mt-1 flex flex-wrap justify-between gap-2 text-xs text-slate-600"><span>{cfg.data && t('catalogue.finder_terms', { term: cfg.data.term_months, down: cfg.data.down_percent, rate: cfg.data.rate_percent })}</span>
             {budget > 0 && trims.data && <span className="font-semibold text-emerald-700">{t('catalogue.fits', { count: trims.data.filter((x) => monthlyOf(x) <= budget).length })} · <button type="button" className="underline" onClick={() => setVal('monthly', '')}>{t('catalogue.finder_clear')}</button></span>}
             {!budget && <span>{t('catalogue.finder_hint')}</span>}</div>
         </div>
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><h1 className="text-2xl font-bold">{t('nav.cars')}{trims.data && <span className="ms-2 text-base font-normal text-slate-500">({t('catalogue.count', { count: trims.data.length })})</span>}</h1>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><h1 className="page-title">{t('nav.cars')}{trims.data && <span className="ms-2 text-base font-normal text-slate-500">({t('catalogue.count', { count: trims.data.length })})</span>}</h1>
           <label className="flex items-center gap-2 whitespace-nowrap text-sm">{t('catalogue.sort')}<Select value={f.sort} onChange={set('sort')}><option value="">{t('catalogue.sort_default')}</option><option value="price_asc">{t('catalogue.sort_low')}</option><option value="price_desc">{t('catalogue.sort_high')}</option></Select></label></div>
         {active.length > 0 && <div className="mb-3 flex flex-wrap gap-2">{active.map((k) => <button key={k} className="chip" onClick={() => setVal(k, '')}>{k === 'fuel_type' ? t(`fuel.${f[k]}`) : k === 'body_type' ? t(`body.${f[k]}`) : k.includes('price') ? usd(f[k]) : f[k]} ✕</button>)}</div>}
         <Loading q={trims}>{(list) => { const m = (x) => monthlyOf(x); const fit = budget ? list.filter((x) => m(x) <= budget).sort((a, b) => m(b) - m(a)) : list; const over = budget ? list.filter((x) => m(x) > budget).sort((a, b) => m(a) - m(b)) : [];

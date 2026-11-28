@@ -261,7 +261,7 @@ def browser(S, T):
         pg.locator('input[type=file]').set_input_files(str(S.dir / 'p.png')); pg.locator('[role=dialog] select').select_option(index=1); pg.locator('[role=dialog] button.btn-primary').click(); pg.wait_for_timeout(1500)
         in_dialog = pg.locator('[role=dialog] img').count()
         pg = newpage(tag='photo2'); pg.goto(B + '/cars'); pg.wait_for_selector('a[href^="/cars/"]'); pg.wait_for_timeout(800)
-        rec('SYS-UI-UX-05', 'A photo uploaded by the Sales Manager is stored, served publicly and replaces the illustration on the card (FR-CAT-01)', in_dialog == 1 and pg.locator('a[href^="/cars/"] img').count() == 1, in_dialog)
+        rec('SYS-UI-UX-05', 'A photo uploaded by the Sales Manager is stored, served publicly and replaces the default catalogue photo on the card (FR-CAT-01)', in_dialog == 1 and pg.locator('a[href^="/cars/"] img[src*="/api/catalogue/images/"]').count() == 1 and pg.locator('a[href^="/cars/"] img[src^="/cars/"]').count() >= 10, in_dialog)
         pg = newpage(tag='board'); login(pg, 'consultant1@fsm.lb'); pg.goto(B + '/staff/deals'); pg.wait_for_selector('[data-testid=board] section'); pg.wait_for_timeout(500)
         cols = pg.locator('[data-testid=board] section').count(); heads = pg.locator('[data-testid=board] h3').all_inner_texts()
         rec('SYS-UI-UX-06', 'Consultant sees the pipeline board with one column per stage and the cards of the real deals', cols == 6 and any(re.search(r'[1-9]', h) for h in heads), heads)
