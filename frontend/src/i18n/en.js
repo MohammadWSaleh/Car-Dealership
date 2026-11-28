@@ -1,8 +1,8 @@
 // English dictionary. Arabic lives in ar.js; scripts/check-i18n.mjs verifies both cover every key used by the pages.
 export default {
   brand: { name: 'Full Stack Motors', slogan: 'One stack. One price. Your car.' },
-  nav: { menu:'Menu', trade_in: 'Trade-in', home:'Home', cars: 'Cars', compare: 'Compare', ev_check: 'EV check', my_booking: 'My test drive', login: 'Sign in', register: 'Create account', logout: 'Sign out', account: 'My account', console: 'Staff console' },
-  footer: { explore:'Explore', visit:'Visit us', address:'Highway Road, Beirut, Lebanon', hours:'Mon–Sat, 9:00–18:00', note: 'New cars only · Lebanon · Fixed, non-negotiable prices in USD' },
+  nav: { tools: 'Tools', language: 'Language', menu:'Menu', trade_in: 'Trade-in', home:'Home', cars: 'Cars', compare: 'Compare', ev_check: 'EV check', my_booking: 'My test drive', login: 'Sign in', register: 'Create account', logout: 'Sign out', account: 'My account', console: 'Staff console' },
+  footer: { services: 'Services', explore:'Explore', visit:'Visit us', address:'Highway Road, Beirut, Lebanon', hours:'Mon–Sat, 9:00–18:00', note: 'New cars only · Lebanon · Fixed, non-negotiable prices in USD' },
   common: { no_match: 'No rows match your search.', delete: 'Delete', none: 'None', all: 'All', reset: 'Reset', send: 'Send', remove: 'Remove', apply: 'Apply', copy: 'Copy', save: 'Save', saved: 'Saved', yes: 'Yes', no: 'No', add: 'Add', edit: 'Edit', search: 'Search', approve: 'Approve', reject: 'Reject' },
   form: { name: 'Full name', phone: 'Phone', email: 'Email', message: 'Message', password: 'Password', referral_code: 'Referral code (optional)', referral_hint: 'Enter the code a friend gave you' },
   consent: { data: 'I agree to the processing of my personal data to handle this request (required).', marketing: 'I would like to receive offers and Owners Circle news (optional).' },
